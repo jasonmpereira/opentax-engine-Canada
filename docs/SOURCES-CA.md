@@ -45,14 +45,30 @@ Every row must fill all of the following:
 
 ## Registry
 
+Intake count: **1** of ~70 received (2026-07-26).
+
 | id | title | publisher | type | copyright | excerpt-permitted | revision-date | topics | tier |
 |---|---|---|---|---|---|---|---|---|
-| folio-s1-f1-c1 | Income Tax Folio S1-F1-C1, Medical Expense Tax Credit | CRA | Folio | Crown | yes (attribution required) | EXAMPLE — verify on population | medical-expenses, credits | 3 |
-| ita-consolidation | Income Tax Act, R.S.C. 1985, c. 1 (5th Supp.) — consolidated | Justice Laws (Department of Justice Canada) | statute consolidation | Crown | yes (attribution + SI/97-5 "not an official version" notice) | EXAMPLE — verify on population | all | 3 |
-| ey-tax-guide | EY's Complete Guide to the T1 (example commercial reference) | EY / commercial publisher | commercial | commercial | **NO — cite only, never excerpt, never commit** | EXAMPLE — verify on population | t1-general | 3 |
+| ppi-lit-2025 | Tax Talk — The Advisor's Guide to Life Insurance Taxation 2025 | PPI Management Inc. (commercial insurance MGA) | commercial | commercial | **NO — cite only, never excerpt, never commit** (PDF held outside the repo; sha256 prefix `6ff3e7a0490c25d0`, 60 pp, image-only scan) | April 2025 ("last updated April 2025" per inside cover) | life-insurance-taxation: exempt-test (s.148, Reg 306/307), acb, ncpi, csv, dispositions-and-policy-gains, policy-loans, rollovers-s148(8), transfers-s148(7), cda, rdtoh, corporate-owned-insurance, share-valuation, 10/8-policies, leveraged-insured-annuity, interest-deductibility, post-mortem-stop-loss, charitable-donation-of-policies, seg-funds, disability-ci-taxation, tosi-interaction, gre, probate, us-estate-tax | 3 |
 
-The three rows above are format examples only; replace or verify them during
-population.
+Registry notes:
+
+- **ppi-lit-2025** — engine relevance: LOW for v1 T1 (policy gains reach the
+  T1 as other income, line 13000 — not in v1 scope) and none for M2 benefits;
+  HIGH for advisory reference and any later corporate/estate scenarios. It is a
+  secondary practitioner guide: where it is used to triage or guard a rule, the
+  operative citation must be the ITA provision or CRA document it summarizes,
+  with this guide cited as corroboration only. Currency caution: predates
+  nothing critical for TY2025 T1, but its "proposed changes" notes (e.g.
+  intergenerational transfers) must be re-verified against enacted law before
+  reliance. Image-only PDF (no text layer) — page-image reading or OCR required.
+
+Format examples (verify on population):
+
+| id | title | publisher | type | copyright | excerpt-permitted | revision-date | topics | tier |
+|---|---|---|---|---|---|---|---|---|
+| folio-s1-f1-c1 | Income Tax Folio S1-F1-C1, Medical Expense Tax Credit | CRA | Folio | Crown | yes (attribution required) | EXAMPLE | medical-expenses, credits | 3 |
+| ita-consolidation | Income Tax Act, R.S.C. 1985, c. 1 (5th Supp.) — consolidated | Justice Laws (Department of Justice Canada) | statute consolidation | Crown | yes (attribution + SI/97-5 "not an official version" notice) | EXAMPLE | all | 3 |
 
 ## Standing rule (Banshee H5, veto-backed)
 
