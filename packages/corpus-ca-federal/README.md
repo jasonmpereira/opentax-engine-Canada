@@ -1,4 +1,4 @@
-# @woodgate/corpus-ca-federal
+# @opencantax/corpus-ca-federal
 
 > Package name is a **placeholder** pending the H2 rename off "OpenTax"/@invaro
 > (Invaro's trademarks). Do not publish or externally reference this name.

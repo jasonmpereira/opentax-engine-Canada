@@ -1,6 +1,6 @@
 {
   "//": [
-    "NAME IS A PLACEHOLDER: '@woodgate/corpus-ca-federal' pending the H2 repo/scope rename",
+    "Scope @opencantax confirmed by Jason Pereira 2026-07-26 (D11b); repo rename to 'opencantax' pending on GitHub",
     "off 'OpenTax'/@invaro (Invaro trademarks). Do not publish under this name.",
     "SEPARATELY LICENSED (Angel condition 4): this corpus is proprietary (see ./LICENSE),",
     "NOT AGPL-3.0 like the engine. It is loaded by the engine as data.",
@@ -8,7 +8,7 @@
     "(pnpm recursive run only executes packages that define the script). Use 'typecheck'",
     "manually once workspace deps are installed. Wire into the build in Phase 2."
   ],
-  "name": "@woodgate/corpus-ca-federal",
+  "name": "@opencantax/corpus-ca-federal",
   "version": "0.1.0",
   "description": "Canadian federal T1 individual income tax and benefits rules as cited, content-addressed data (TY2025). Proprietary corpus, separately licensed from the AGPL engine.",
   "license": "UNLICENSED",
