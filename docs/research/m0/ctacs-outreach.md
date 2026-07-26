@@ -1,3 +1,5 @@
+> **STATUS 2026-07-26: SUPERSEDED — outreach will not be sent.** Jason elected not to contact CTaCS; blamario (TY2025-verified, GPL) takes the second-oracle seat. Retained for reference if CTaCS is ever revisited.
+
 # CTaCS reconnaissance + outreach draft (M0)
 
 Date: 2026-07-26. Prepared for Jason Pereira (Woodgate Financial). Status: **draft — Jason sends the email**.

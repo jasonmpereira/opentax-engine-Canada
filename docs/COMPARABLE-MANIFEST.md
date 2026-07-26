@@ -38,3 +38,18 @@ These are validated by hand-built fixtures (CRA forms, worksheets, published exa
 ## Amendment rule
 
 Any removal of a comparable after this manifest freezes is disclosed in REPORT.md as a removal. Additions are always permitted.
+
+## Addendum 2026-07-26 — blamario elevated to second differential oracle
+
+CTaCS was dropped by decision (no outreach). blamario/canadian-income-tax
+(pin `ab245863c9bb`, Hackage 2025.1, GPL-3.0-or-later, process-separated
+external program) is elevated from provisional to the second differential
+oracle. Planned blamario comparables (additions are always permitted under
+the amendment rule): **full-return T1 line 42000 assembly** plus per-line
+checks on completed T1/schedule fields — this is the check on pipeline
+wiring that per-component PE-Canada comparisons structurally cannot
+provide (Apocalypse challenge 1 mitigation). Exact line list to be fixed
+when this manifest freezes at M1-V kickoff. blamario carries no EULA
+restriction on automated use or published comparisons (GPL); it is not
+CRA-verified and remains a corroborating oracle, not an authority —
+fixtures worked from CRA worksheets stay primary per D10.
