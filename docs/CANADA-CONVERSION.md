@@ -19,24 +19,23 @@ provincial (state) composers, the examples, the harness, and the README.
 
 ## Phase 0 — Decisions and source preparation
 
-Decisions to make before writing any rules:
+Decisions (settled 2026-07-26):
 
-- [ ] **Scope of v1**: federal T1 for individuals, TY2025 (and TY2026?).
-      Recommend TY2025 first — CRA's 2025 figures are final and the harness
-      oracle supports it. Corporate (T2), trust (T3), and payroll-remittance
-      analogues of the US corpus's corporate rules are out of scope for v1.
-- [ ] **Keep or drop the US corpus**: decide whether this repo *replaces*
-      the US corpus or hosts both jurisdictions side by side. The engine
-      supports both; the CLI/MCP would need a `--jurisdiction` switch if
-      both are kept. Recommendation for a clean Canadian repo: remove
-      `corpus-us-federal` and the US harness after the CA corpus lands, and
-      let the upstream repo remain the US home.
-- [ ] **Return-computed vs CRA-administered benefits**: the T1 computes net
-      federal tax (line 42000) and some refundables (CWB via Schedule 6).
-      The Canada Child Benefit and GST/HST credit are *administered* from
-      return data but not lines on the return. Decide whether the corpus
-      target is strictly "the return" (recommended for v1) or also models
-      benefit entitlements as separate query targets later.
+- [x] **Canada only.** This repo replaces the US corpus entirely: remove
+      `corpus-us-federal`, the US state composers, and the US harness once
+      the CA corpus lands. Upstream remains the US home.
+- [x] **Benefits are in scope**, as separate query targets beyond the T1
+      itself: Canada Child Benefit (s. 122.6), GST/HST credit (s. 122.5),
+      and programs from the owner's government-benefit-program database
+      (to be ingested — see "Benefits corpus" below). The v1 milestone is
+      still the return (`ca.federal.net_tax`); benefit targets follow as a
+      second milestone on the same corpus.
+- [x] **Oracles: PolicyEngine Canada + CTaCS**, with CRA anchors (PDOC,
+      T1 worksheets, certified software) for triage. See Phase 5 for what
+      any additional resource must provide to join them.
+- [ ] **Scope of v1**: federal T1 for individuals, TY2025 first (CRA's 2025
+      figures are final). TY2026 versions follow. Corporate (T2) and trust
+      (T3) out of scope.
 - [ ] **Package naming**: `@invaro/opentax-corpus-ca-federal`, rule id
       prefix `ca.federal.*`, currency CAD. Decide whether the npm scope and
       repo name change too.
@@ -222,8 +221,60 @@ explain,search}.ts`, `cli/src/render/summary.ts`, `mcp/src/server.ts`,
       becomes the Phase 5/6 harness + golden fixtures until a Canadian
       benchmark equivalent exists.
 
-## Phase 5 — Independent oracle selection (before building the harness)
+## Phase 5 — Oracles (before building the harness)
 
+**Chosen oracles: PolicyEngine Canada and CTaCS.** Any further resource is
+welcome if it clears the bar below; resources that clear only part of it
+still have a role (see the tiers).
+
+### What a resource must provide to serve as an oracle
+
+1. **Independence.** Implemented from primary sources (ITA/CRA) by someone
+   who has never seen our corpus, and not derived from the same secondary
+   source we used. The whole point of differential testing is that shared
+   errors are unlikely; two encodings of the same blog post fail together.
+2. **Scriptable batch execution.** Callable headlessly (library, API, CLI)
+   over hundreds of generated scenarios. A calculator that must be clicked
+   through is not an oracle — but see tier 2.
+3. **Deterministic, exact output** with documented rounding, ideally to the
+   cent. Same inputs → same answer, every run.
+4. **A definable comparable.** We must be able to establish exactly what
+   its "tax" number includes and excludes (refundables? provincial?
+   clawbacks? CPP on self-employment?) — by documentation or by probing,
+   as `run_policyengine.py` does for PE-US. If the total is a black box
+   that can't be decomposed or probed, disagreements can't be triaged.
+5. **Intermediate lines exposed** (net income, taxable income, individual
+   credits). Not strictly required, but the difference between localizing
+   a disagreement in minutes vs bisecting the whole return.
+6. **Correct-year parameters.** Final TY2025 figures including the recent
+   changes (blended 14.5% rate, cancelled inclusion-rate increase). An
+   oracle that is itself stale generates false disagreements — tolerable
+   if known, corrosive if not.
+7. **Version-pinnable.** The report must cite the exact oracle version so
+   results reproduce; a resource that silently updates under us can't
+   anchor a published report.
+8. **Licensing** that permits automated use and publishing comparison
+   results.
+
+### Tiers — where a resource that clears only part of the bar still helps
+
+- **Tier 1 — oracle** (all of the above): joins the harness; every
+  scenario runs through it. PolicyEngine Canada, CTaCS.
+- **Tier 2 — anchor** (authoritative but not scriptable): NETFILE-certified
+  software (TaxCycle, Profile, DT Max, Wealthsimple Tax), CRA PDOC, CRA's
+  own worksheets. Used two ways: hand-worked **golden fixtures** in the
+  corpus test suite, and the **tiebreaker** when the tier-1 oracles
+  disagree with us — certified software is especially strong here because
+  CRA certifies it against its own test suite.
+- **Tier 3 — authority** (adjudicates, never computes): the ITA text, CRA
+  Folios/ITs/guides, court decisions. These decide who is *right* in a
+  triaged difference; they never generate expected values at scale.
+
+A resource that is scriptable but not independent (e.g. anything built on
+PolicyEngine's parameters) adds ~nothing as an oracle — classify by
+provenance first.
+
+- [ ] Classify the owner's additional resources into tiers 1–3.
 - [ ] **Probe PolicyEngine Canada** (`policyengine-canada`) coverage first:
       confirm it models 2025 brackets (blended rate!), BPA enhancement,
       dividend credits, CWB, CPP2, OAS clawback. Its coverage is much
@@ -231,8 +282,10 @@ explain,search}.ts`, `cli/src/render/summary.ts`, `mcp/src/server.ts`,
       scenario space. Document what its `income_tax` variable includes
       (refundables? provincial?) the way `run_policyengine.py` documents
       its PE-US probes.
-- [ ] Evaluate **CTaCS** (Milligan's Canadian Tax and Credit Simulator) as
-      a second oracle, and **SPSD/M** (StatCan; licensed) if available.
+- [ ] Stand up **CTaCS** (Milligan's Canadian Tax and Credit Simulator) as
+      the second oracle. Note it is distributed as Stata code — the harness
+      runner needs Stata (or a port of the relevant year's do-files);
+      confirm access before counting on it, and pin the CTaCS version.
 - [ ] Non-oracle anchors for triage: CRA **PDOC**/T4032 for CPP/EI, the
       printed T1 worksheets, and a handful of returns cross-checked in
       NETFILE-certified software.
@@ -267,9 +320,29 @@ explain,search}.ts`, `cli/src/render/summary.ts`, `mcp/src/server.ts`,
 - [ ] Deferred federal features: pension income splitting (s. 60.03), LCGE,
       foreign tax credit (s. 126), moving expenses, losses carryover,
       instalments (s. 156).
-- [ ] Benefit modeling as separate targets (CCB s. 122.6, GST/HST credit
-      s. 122.5) if scoped in.
 - [ ] TY2026 rule versions once CRA publishes final indexation.
+
+### Benefits corpus (in scope — milestone 2)
+
+Benefits are separate query targets on the same engine (e.g.
+`ca.federal.ccb`, `ca.federal.gst_credit`), each a rule chain from return
+facts (adjusted family net income, dependants' ages, province) to an
+entitlement, cited like any tax rule.
+
+- [ ] Ingest the owner's **government benefit program database**: for each
+      program capture authority (statute/regulation/program terms),
+      administering body, eligibility conditions, benefit formula,
+      income-test definition (which "income" — AFNI? line 23600?),
+      payment period vs base year, and indexation source. Programs whose
+      rules aren't statutory/published get flagged — the engine refuses
+      what it can't cite.
+- [ ] Start with the two statutory ones (CCB s. 122.6, GST/HST credit
+      s. 122.5) — both are fully specified in the ITA and both are modeled
+      by PolicyEngine Canada, so the differential harness extends to them
+      naturally (benefits are PE-Canada's strong suit).
+- [ ] Benefit periods run July–June on prior-year income — the corpus's
+      `effectiveFrom`/`effectiveTo` windows handle this, but targets must
+      state clearly which base year an entitlement derives from.
 
 ---
 
