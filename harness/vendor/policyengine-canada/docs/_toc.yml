@@ -1,0 +1,6 @@
+format: jb-book
+root: index
+parts:
+  - caption: Income after taxes and benefits
+    chapters:
+    - file: household_net_income

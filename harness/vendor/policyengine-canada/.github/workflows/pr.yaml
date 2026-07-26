@@ -1,0 +1,57 @@
+name: Pull request
+on:
+  pull_request:
+    branches: [master]
+jobs:
+  Lint:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v6
+      - name: Set up Python
+        uses: actions/setup-python@v6
+        with:
+          python-version: "3.14"
+          allow-prereleases: true
+      - name: Install ruff
+        run: pip install "ruff>=0.9.0"
+      - name: Check formatting
+        run: ruff format --check .
+  check-changelog:
+    name: Check changelog fragment
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v6
+      - name: Check for changelog fragment
+        run: |
+          FRAGMENTS=$(find changelog.d -type f ! -name '.gitkeep' | wc -l)
+          if [ "$FRAGMENTS" -eq 0 ]; then
+            echo "::error::No changelog fragment found in changelog.d/"
+            echo "Add one with: echo 'Description.' > changelog.d/\$(git branch --show-current).<type>.md"
+            echo "Types: added, changed, fixed, removed, breaking"
+            exit 1
+          fi
+  Test:
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        os: [ubuntu-latest, windows-latest]
+        python-version: ["3.14"]
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v6
+      - name: Set up Python
+        uses: actions/setup-python@v6
+        with:
+          python-version: ${{ matrix.python-version }}
+          allow-prereleases: true
+      - name: Install build dependencies
+        run: pip install wheel setuptools
+      - name: Install package
+        run: make install
+      - name: Run tests
+        run: make test
+      - uses: codecov/codecov-action@v6
+      - name: Build package
+        run: make build
+      - name: Test documentation builds
+        run: make documentation

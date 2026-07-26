@@ -77,6 +77,16 @@ importers:
         specifier: ^5.8.3
         version: 5.9.3
 
+  packages/corpus-ca-federal:
+    dependencies:
+      '@invaro/opentax-core':
+        specifier: workspace:*
+        version: link:../core
+    devDependencies:
+      typescript:
+        specifier: ^5.8.3
+        version: 5.9.3
+
   packages/corpus-us-federal:
     dependencies:
       '@invaro/opentax-core':

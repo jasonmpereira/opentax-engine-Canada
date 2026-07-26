@@ -1,0 +1,48 @@
+{
+  "//": [
+    "NAME IS A PLACEHOLDER: '@woodgate/corpus-ca-federal' pending the H2 repo/scope rename",
+    "off 'OpenTax'/@invaro (Invaro trademarks). Do not publish under this name.",
+    "SEPARATELY LICENSED (Angel condition 4): this corpus is proprietary (see ./LICENSE),",
+    "NOT AGPL-3.0 like the engine. It is loaded by the engine as data.",
+    "INERT BY DESIGN: no 'build' script yet, so the root 'pnpm -r build' skips this package",
+    "(pnpm recursive run only executes packages that define the script). Use 'typecheck'",
+    "manually once workspace deps are installed. Wire into the build in Phase 2."
+  ],
+  "name": "@woodgate/corpus-ca-federal",
+  "version": "0.1.0",
+  "description": "Canadian federal T1 individual income tax and benefits rules as cited, content-addressed data (TY2025). Proprietary corpus, separately licensed from the AGPL engine.",
+  "license": "UNLICENSED",
+  "private": true,
+  "type": "module",
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js"
+    }
+  },
+  "files": [
+    "dist"
+  ],
+  "scripts": {
+    "typecheck": "tsc -p tsconfig.json --noEmit"
+  },
+  "dependencies": {
+    "@invaro/opentax-core": "workspace:*"
+  },
+  "devDependencies": {
+    "typescript": "^5.8.3"
+  },
+  "engines": {
+    "node": ">=20"
+  },
+  "keywords": [
+    "tax",
+    "canada",
+    "t1",
+    "cra",
+    "tax-law",
+    "corpus"
+  ]
+}
