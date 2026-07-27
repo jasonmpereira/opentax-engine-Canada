@@ -60,8 +60,8 @@ in-repo under `docs/sources/`).
 | vtn-ptu-2025 | Personal Tax Update 2025 — 43rd Annual, Planning and Preparation of 2024 Personal Tax Returns (PTU2025 textbook) | Video Tax News Inc. | commercial | commercial | **NO — cite only, never excerpt, never commit; DO-NOT-INGEST pending relicensing (see registry note)** (PDF held outside the repo; sha256 prefix `3cb1399942`, 436 pp, text layer present) | January 2025 (v1 01.10.2025) | t1-preparation-ty2024, current-developments, capital-gains-losses, credits-and-benefits, business-income, employment-income, owner-manager-remuneration, gst-hst, estates-trusts-deceased, retirement-registered-plans, other-income-deductions, cra-assessing-admin, us-international | 3 |
 | vtn-ctu-2025 | Corporate Tax Update 2025 — 41st Annual, Fresh Ideas and New Snags (CTU2025 textbook) | Video Tax News Inc. | commercial | commercial | **NO — cite only, never excerpt, never commit; DO-NOT-INGEST pending relicensing (see registry note)** (PDF held outside the repo; sha256 prefix `99987437da`, 432 pp, text layer present) | September 2025 (v2 10.03.2025) | corporate-tax, current-developments, owner-manager-remuneration, gst-hst, npo-charities, reorganizations, capital-gains-losses, business-purchase-sale, business-property-income, estate-retirement-planning, t2-returns, employees, cra-assessing-admin, us-international | 3 |
 | cra-itam | CRA Income Tax Audit Manual (ITAM), Domestic Compliance Programs Branch — full manual, pre-chunked | CRA (canada.ca) | guide | Crown | yes (attribution required; held outside the repo pending an intake decision — see registry note) | not captured at scrape time (manifest `date_modified` empty; ITAM chapters carry own revision notes — pin on ingestion) | audit-procedure, taxpayer-rights-relief, penalties, objections-appeals, losses, income-characterization, related-party-transactions, estates-trusts, clearance-certificates, international-audit, audit-techniques | 3 |
-| ita-consolidation | Income Tax Act, R.S.C. 1985, c. 1 (5th Supp.) — Justice Laws consolidated PDF (bilingual, 3,827 pp) | Justice Laws (Department of Justice Canada) | statute consolidation | Crown | yes (attribution + SI/97-5 "not an official version" notice) — **committed in-repo: `docs/sources/ita-consolidated-2026-06-14.pdf`**, sha256 prefix `31cc0fee5bcb1521` | current to 2026-06-14, last amended 2026-04-01 | all | 3 |
-| itr-consolidation | Income Tax Regulations, C.R.C., c. 945 — Justice Laws consolidated PDF (bilingual, 1,361 pp) | Justice Laws (Department of Justice Canada) | statute consolidation | Crown | yes (attribution + SI/97-5 "not an official version" notice) — **committed in-repo: `docs/sources/itr-consolidated-2026-06-14.pdf`**, sha256 prefix `fd624ad485ede26b` | current to 2026-06-14, last amended 2026-03-26 | all; notably withholding (Reg 100–109), CCA (Reg 1100/Sch II), exempt-test policies (Reg 306/307), prescribed-rates (Reg 4301) | 3 |
+| ita-consolidation | Income Tax Act, R.S.C. 1985, c. 1 (5th Supp.) — Justice Laws consolidation (PDF bilingual 3,827 pp + LIMS XML) | Justice Laws (Department of Justice Canada) | statute consolidation | Crown | yes (attribution + SI/97-5 "not an official version" notice) — **committed in-repo: `docs/sources/ita-consolidated-2026-06-14.pdf`** (`31cc0fee5bcb1521`) **and `.xml`** (`f65398c6f8a1006a`; preferred for machine use) | current to 2026-06-14, last amended 2026-04-01 (PDF and XML identical) | all | 3 |
+| itr-consolidation | Income Tax Regulations, C.R.C., c. 945 — Justice Laws consolidation (PDF bilingual 1,361 pp + LIMS XML) | Justice Laws (Department of Justice Canada) | statute consolidation | Crown | yes (attribution + SI/97-5 "not an official version" notice) — **committed in-repo: `docs/sources/itr-consolidated-2026-06-14.pdf`** (`fd624ad485ede26b`) **and `itr-consolidated-2026-03-31.xml`** (`67841e2c5ed4fe1c`; preferred for machine use) | PDF current to 2026-06-14, XML snapshot current to 2026-03-31 — both last amended 2026-03-26, substantively identical | all; notably withholding (Reg 100–109), CCA (Reg 1100/Sch II), exempt-test policies (Reg 306/307), prescribed-rates (Reg 4301) | 3 |
 
 Registry notes:
 
@@ -104,12 +104,12 @@ Registry notes:
   authority for procedure questions, not a computation source.
 
 - **ita-consolidation / itr-consolidation** — the anchor authorities for every
-  rule; committed in-repo (Crown, SI/97-5) under `docs/sources/` with the
-  reproduction notice in that directory's README. PDFs are the bilingual
-  Justice Laws consolidations; when the structured XML consolidations are
-  obtained they should be added alongside (better for section-level chunking
-  and citation) under the same ids. A newer consolidation supersedes by adding
-  a new dated file and updating `revision-date` — see `docs/sources/README.md`.
+  rule; committed in-repo (Crown, SI/97-5) under `docs/sources/` in two
+  formats each: the bilingual PDF (human reference) and the LIMS XML
+  (structured by section with LIMS ids and in-force dates — the preferred
+  version for chunking, retrieval, and pinpoint citation). A newer
+  consolidation supersedes by adding a new dated file and updating
+  `revision-date` — see `docs/sources/README.md`.
 
 Format example (verify on population):
 
