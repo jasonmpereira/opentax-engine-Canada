@@ -8,8 +8,10 @@ Every statute consolidation, CRA Folio/IT/IC, guide, worksheet, court decision,
 and commercial reference used to justify a calculation rule must be cataloged
 here before it is cited in code, fixtures, or the corpus. The registry records
 each resource's provenance, copyright status, whether its text may ever be
-excerpted into this repository, and its tier in the validation hierarchy. The
-table below is the frame; population is blocked on the handover.
+excerpted into this repository, and its tier in the validation hierarchy. Population is
+in progress: batch 1 of the handover (zip, 2026-07-27) is cataloged below;
+the remaining ~46 files (including the ITA and Regulations consolidations)
+are still to come.
 
 ## Classification rules (per CANADA-CONVERSION.md, Phase 5)
 
@@ -45,11 +47,15 @@ Every row must fill all of the following:
 
 ## Registry
 
-Intake count: **1** of ~70 received (2026-07-26).
+Intake count: **4** of ~70 received (batch 1 zip received 2026-07-27; PPI PDF
+first received 2026-07-26 and re-confirmed byte-identical in batch 1).
 
 | id | title | publisher | type | copyright | excerpt-permitted | revision-date | topics | tier |
 |---|---|---|---|---|---|---|---|---|
 | ppi-lit-2025 | Tax Talk — The Advisor's Guide to Life Insurance Taxation 2025 | PPI Management Inc. (commercial insurance MGA) | commercial | commercial | **NO — cite only, never excerpt, never commit** (PDF held outside the repo; sha256 prefix `6ff3e7a0490c25d0`, 60 pp, image-only scan) | April 2025 ("last updated April 2025" per inside cover) | life-insurance-taxation: exempt-test (s.148, Reg 306/307), acb, ncpi, csv, dispositions-and-policy-gains, policy-loans, rollovers-s148(8), transfers-s148(7), cda, rdtoh, corporate-owned-insurance, share-valuation, 10/8-policies, leveraged-insured-annuity, interest-deductibility, post-mortem-stop-loss, charitable-donation-of-policies, seg-funds, disability-ci-taxation, tosi-interaction, gre, probate, us-estate-tax | 3 |
+| vtn-ptu-2025 | Personal Tax Update 2025 — 43rd Annual, Planning and Preparation of 2024 Personal Tax Returns (PTU2025 textbook) | Video Tax News Inc. | commercial | commercial | **NO — cite only, never excerpt, never commit; DO-NOT-INGEST pending relicensing (see registry note)** (PDF held outside the repo; sha256 prefix `3cb1399942`, 436 pp, text layer present) | January 2025 (v1 01.10.2025) | t1-preparation-ty2024, current-developments, capital-gains-losses, credits-and-benefits, business-income, employment-income, owner-manager-remuneration, gst-hst, estates-trusts-deceased, retirement-registered-plans, other-income-deductions, cra-assessing-admin, us-international | 3 |
+| vtn-ctu-2025 | Corporate Tax Update 2025 — 41st Annual, Fresh Ideas and New Snags (CTU2025 textbook) | Video Tax News Inc. | commercial | commercial | **NO — cite only, never excerpt, never commit; DO-NOT-INGEST pending relicensing (see registry note)** (PDF held outside the repo; sha256 prefix `99987437da`, 432 pp, text layer present) | September 2025 (v2 10.03.2025) | corporate-tax, current-developments, owner-manager-remuneration, gst-hst, npo-charities, reorganizations, capital-gains-losses, business-purchase-sale, business-property-income, estate-retirement-planning, t2-returns, employees, cra-assessing-admin, us-international | 3 |
+| cra-itam | CRA Income Tax Audit Manual (ITAM), Domestic Compliance Programs Branch — full manual, pre-chunked | CRA (canada.ca) | guide | Crown | yes (attribution required; held outside the repo pending an intake decision — see registry note) | not captured at scrape time (manifest `date_modified` empty; ITAM chapters carry own revision notes — pin on ingestion) | audit-procedure, taxpayer-rights-relief, penalties, objections-appeals, losses, income-characterization, related-party-transactions, estates-trusts, clearance-certificates, international-audit, audit-techniques | 3 |
 
 Registry notes:
 
@@ -62,6 +68,34 @@ Registry notes:
   nothing critical for TY2025 T1, but its "proposed changes" notes (e.g.
   intergenerational transfers) must be re-verified against enacted law before
   reliance. Image-only PDF (no text layer) — page-image reading or OCR required.
+
+- **vtn-ptu-2025 / vtn-ctu-2025 — LICENSING HOLD (stronger than H5).** Both
+  textbooks are watermarked on every page "for the exclusive use of Aravind
+  Sithamparapillai of Ironwood Wealth Management Group" — the license belongs
+  to a third-party registrant, not to Jason or Woodgate. On top of that, VTN's
+  copyright notice (CTU2025, p. 3) expressly prohibits "uploading content to
+  websites, intranets, cloud platforms, or AI tools, and using it for
+  training." H5 already bars committing or excerpting commercial text, but
+  these two go further: they must not be ingested into the Tax Bot corpus,
+  embedded, or uploaded to any retrieval store *at all* until Woodgate holds
+  its own registration and written permission from VTN
+  (videotax.com/copyright). Until then they are catalog-entry-only: a human
+  may consult them; the operative citation in any rule must be the underlying
+  ITA provision, CRA document, or case they summarize. Also note vtn-ptu-2025
+  covers **TY2024** returns — parameter values must not be reused for TY2025
+  rules without re-verification.
+
+- **cra-itam** — Crown copyright; excerpting is permitted with attribution, so
+  unlike the commercial rows this one *could* eventually live in the repo.
+  Received as an LLM-ready chunk set (74 markdown chunks, ~1.96M chars, with
+  `manifest.jsonl`/`manifest.csv` carrying `chunk_id`, `source_url`
+  provenance per chunk, and per-chunk content hashes) derived from a
+  consolidated scrape of the canada.ca ITAM pages. Held outside the repo for
+  now: before committing, (1) spot-verify chunks against the live canada.ca
+  pages since the intermediate consolidation was tool-generated, and (2) pin
+  the manual's revision dates, which the manifest left empty. Engine
+  relevance: administrative/audit posture, penalties, objections — Tier 3
+  authority for procedure questions, not a computation source.
 
 Format examples (verify on population):
 
