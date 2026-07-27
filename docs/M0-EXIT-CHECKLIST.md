@@ -2,8 +2,16 @@
 
 M0 exits only when every gate below is checked, or explicitly waived under the waiver authority. Status as of 2026-07-26.
 
-- [ ] **ITA dates pinned** — owner: Jason — status: **blocked**
-- [ ] **SOURCES-CA.md populated** — owner: Banshee — status: **blocked on handover**
+- [x] **ITA dates pinned** — CLOSED 2026-07-27: Justice Laws consolidations
+  received from Jason and committed under `docs/sources/` in PDF + LIMS XML.
+  ITA current to **2026-06-14**, last amended **2026-04-01**; ITR PDF current
+  to 2026-06-14 / XML snapshot 2026-03-31, both last amended **2026-03-26**.
+  These are the corpus's statutory snapshot; hashes in `docs/sources/README.md`.
+- [x] **SOURCES-CA.md populated** — CLOSED 2026-07-27: handover complete at
+  **6 registered sources** (the ~70 estimate was overstated — Jason confirmed
+  the batch-1 zip was everything). Registry live with compliance columns;
+  note the VTN textbooks carry a licensing hold (do-not-ingest) and the CRA
+  ITAM chunk set awaits canada.ca spot-verification (needs egress).
 - [ ] **Top-up citation pinned** — owner: Phoenix — status: **in progress**
 - [x] **CTaCS confirmed-or-fallback** — RESOLVED 2026-07-26: **CTaCS dropped by Jason's decision** (no outreach). blamario (verified GO, full TY2025 forms, GPL — no permission needed for automated use or published comparisons) is elevated to second differential oracle alongside per-component PE-Canada; fixtures remain primary per D10. Stata purchase cancelled. Outreach draft retained at docs/research/m0/ctacs-outreach.md should CTaCS ever be revisited.
 - [ ] **blamario GO-WAIT decision** — owner: Phoenix — status: **in progress**
