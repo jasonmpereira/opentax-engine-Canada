@@ -2,16 +2,18 @@
 
 ## Purpose
 
-This file is the single registry for the interpretation resources (~70 expected,
-pending Jason's handover) that inform the Canadian T1 + benefits conversion.
+This file is the single registry for the interpretation resources that inform
+the Canadian T1 + benefits conversion.
 Every statute consolidation, CRA Folio/IT/IC, guide, worksheet, court decision,
 and commercial reference used to justify a calculation rule must be cataloged
 here before it is cited in code, fixtures, or the corpus. The registry records
 each resource's provenance, copyright status, whether its text may ever be
-excerpted into this repository, and its tier in the validation hierarchy. Population is
-in progress: batch 1 of the handover (zip, 2026-07-27) is cataloged below;
-the remaining ~46 files (including the ITA and Regulations consolidations)
-are still to come.
+excerpted into this repository, and its tier in the validation hierarchy.
+Jason's handover is **complete** (zip, 2026-07-27) and fully cataloged below.
+Canonical Crown sources not in the handover — the ITA and Regulations
+consolidations (Justice Laws), Income Tax Folios, CRA guides and forms — are
+freely retrievable and will be added as individual rows when first cited by a
+rule, pulled directly from canada.ca / laws-lois.justice.gc.ca.
 
 ## Classification rules (per CANADA-CONVERSION.md, Phase 5)
 
@@ -47,8 +49,8 @@ Every row must fill all of the following:
 
 ## Registry
 
-Intake count: **4** of ~70 received (batch 1 zip received 2026-07-27; PPI PDF
-first received 2026-07-26 and re-confirmed byte-identical in batch 1).
+Intake count: **4 of 4 — handover complete** (zip received 2026-07-27; PPI PDF
+first received 2026-07-26 and re-confirmed byte-identical in the zip).
 
 | id | title | publisher | type | copyright | excerpt-permitted | revision-date | topics | tier |
 |---|---|---|---|---|---|---|---|---|
