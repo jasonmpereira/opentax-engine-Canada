@@ -113,3 +113,31 @@ Two findings worth recording beyond a plain re-confirmation:
 allowlist, or the table captured on a canada.ca-capable network and handed
 over the way the ITA/ITR consolidations were. Retrying from this environment
 will keep producing the row above.
+
+#### Refinement 2026-07-28 — the allowlist is selective, not uniformly narrow
+
+Finding 1 above ("the egress allowlist is narrow in general") is correct that
+the block is a policy constraint rather than a canada.ca WAF quirk, but it
+overstates the breadth. Re-probing found the allowlist is **selective**:
+
+| Host | Result |
+|---|---|
+| `raw.githubusercontent.com` | **200** — full file bodies, no size limit hit at 14 MB |
+| `github.com` (git transport) | **allowed** — `git clone` / `ls-remote` work |
+| `api.github.com` | 403 |
+| `www.canada.ca`, `laws-lois.justice.gc.ca`, `web.archive.org`, `irs.gov` | 403 |
+
+**This does not unblock anything in the backlog above** — the NETFILE
+certified-software table and the T4032 PDFs exist only on canada.ca, and no
+GitHub route reaches them. The conclusion for CRA parameters is unchanged.
+
+It did unblock statute verification: Justice Canada mirrors all consolidated
+federal law XML at `justicecanada/laws-lois-xml`, so the committed ITA/ITR
+were verified against the official source without canada.ca. See
+[`../../sources/README.md`](../../sources/README.md). The same route is
+available for future statutes (EI Act, OAS Act).
+
+Note also that `add_repo` cannot attach the mirror to this session — it
+refuses cross-owner adds (`cross-tier adds are not supported in v1`, session
+already holds `jasonmpereira` repos). Plain `git`/`curl` against the mirror
+works and needs no session change; that is the supported path.
