@@ -80,3 +80,36 @@ Official pages:
 
 - Full NETFILE certified-software table (names × free/paid × platform × excluded forms) — blocked; needs a canada.ca-capable network.
 - Live-page verification of all [official-snippet] figures — same blocker. No figure above conflicts with the project's already-verified TY2025 facts; the EI trio (1.64% / $65,700 / $1,077.48) and the 2.7% factor are consistent across the CRA snapshot, ESDC releases, and multiple independent secondary sources.
+
+### Re-check 2026-07-28 — blocker unchanged, backlog still not runnable
+
+The fetch backlog above was retried in full. **Both items remain blocked; no
+figure in this document changed.** Routes attempted, all failing:
+
+| Route | Target | Result |
+|---|---|---|
+| `curl` via session egress proxy | `www.canada.ca`, `canada.ca` | CONNECT 403 — gateway policy denial, logged by the proxy as `connect_rejected` |
+| `curl` via session egress proxy | `laws-lois.justice.gc.ca`, `web.archive.org` | CONNECT 403 — same denial |
+| WebFetch | `.../netfile-overview/certified-software-netfile-program.html` | HTTP 403 (canada.ca WAF) |
+| WebFetch | `/content/canadasite/...` alternate path | HTTP 403 |
+| WebFetch | `/en/services/taxes/.../tax-software/find-software.html` (path not tried on 2026-07-26) | HTTP 403 |
+| WebFetch | EFILE certified-software page (path not tried on 2026-07-26) | HTTP 403 |
+| WebSearch | NETFILE certified software TY2025 | Reachable, but returns the **same partial snapshot** — alphabetical head only (AdvTax, Better Tax, CloudTax, EachTax, FastnEasyTax, FutureTax, GenuTax Standard), no new product names, no free/paid or platform columns |
+
+Two findings worth recording beyond a plain re-confirmation:
+
+1. The egress allowlist is **narrow in general**, not canada.ca-specific — a
+   control fetch of `example.com` also failed to connect. This is an
+   environment/policy constraint, not a canada.ca-specific WAF problem, and it
+   will not resolve on its own. Per proxy policy the denial was reported, not
+   routed around (no third-party mirror or text-extraction proxy was used to
+   reach a blocked domain).
+2. Two canada.ca paths not attempted in the 2026-07-26 pull were tried this
+   round and also 403'd, so the earlier conclusion was not an artifact of
+   trying too few URLs.
+
+**Unblocking this needs an environment change, not another retry** — either
+`www.canada.ca` (and ideally `laws-lois.justice.gc.ca`) added to the egress
+allowlist, or the table captured on a canada.ca-capable network and handed
+over the way the ITA/ITR consolidations were. Retrying from this environment
+will keep producing the row above.

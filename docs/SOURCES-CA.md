@@ -103,6 +103,27 @@ Registry notes:
   relevance: administrative/audit posture, penalties, objections — Tier 3
   authority for procedure questions, not a computation source.
 
+  **Verification attempted 2026-07-28 — not performed; blocked on two counts.**
+  Neither precondition for committing this row can be met from this
+  environment:
+  - *(1) spot-verify chunks against live canada.ca* — blocked. Every route to
+    canada.ca fails (egress-proxy CONNECT 403; WebFetch 403 from the WAF on
+    every path tried). See the 2026-07-28 re-check table in
+    `docs/research/m0/cra-parameter-pins.md` for the full route list.
+  - *(2) pin the manual's revision dates* — blocked independently of the
+    network: **the ITAM chunk set is not present in this environment.** A
+    filesystem search for the 74 markdown chunks and for
+    `manifest.jsonl`/`manifest.csv` returned nothing. Consistent with "held
+    outside the repo", but it means the material to be verified is itself
+    unavailable here, so even a canada.ca-capable network would not by itself
+    let this verification run.
+
+  Status is therefore unchanged: **cra-itam stays catalog-entry-only and out of
+  the repo.** Clearing it needs both the chunk set made available to the
+  session and canada.ca reachable — and note that the revision dates the
+  manifest left empty must come from the ITAM chapters' own revision notes, so
+  pinning them requires the chunk set regardless of network access.
+
 - **ita-consolidation / itr-consolidation** — the anchor authorities for every
   rule; committed in-repo (Crown, SI/97-5) under `docs/sources/` in two
   formats each: the bilingual PDF (human reference) and the LIMS XML
