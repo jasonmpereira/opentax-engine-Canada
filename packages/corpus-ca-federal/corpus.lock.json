@@ -1,0 +1,8 @@
+{
+  "name": "@opencantax/corpus-ca-federal",
+  "version": "0.1.0",
+  "merkleRoot": "sha256:842ccf7be8b8b5869e3335f502d3eaa17477ee609e78b8c184813e3b25b8d989",
+  "ruleCount": 0,
+  "factCount": 33,
+  "rules": {}
+}

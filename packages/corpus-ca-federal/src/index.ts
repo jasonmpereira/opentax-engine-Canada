@@ -1,7 +1,12 @@
 /**
- * @woodgate/corpus-ca-federal (name is an H2-rename placeholder) — Canadian
- * federal T1 individual income tax and benefits rules as data: cited,
- * temporally versioned, content-addressed.
+ * @opencantax/corpus-ca-federal — Canadian federal T1 individual income tax
+ * and benefits rules as data: cited, temporally versioned, content-addressed.
+ *
+ * The corpus identity below must stay equal to package.json's "name": it is
+ * stamped into every proof artifact (proof.corpus.name), so a mismatch would
+ * make proofs cite a package that does not exist. lock.test.ts pins the two
+ * together. (This read "@woodgate/..." until the H2 rename gate closed on
+ * 2026-07-26 — see docs/M0-EXIT-CHECKLIST.md.)
  *
  * PROPRIETARY — separately licensed from the AGPL engine (see ./LICENSE).
  *
@@ -65,7 +70,7 @@ import { facts } from "./facts.js";
 export const rules: Rule[] = [];
 
 export const corpusInput: CorpusInput = {
-  name: "@woodgate/corpus-ca-federal",
+  name: "@opencantax/corpus-ca-federal",
   version: "0.1.0",
   rules,
   facts,

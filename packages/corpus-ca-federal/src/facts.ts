@@ -12,6 +12,23 @@
  *     internally as integer cents. Unlike the IRS whole-dollar convention,
  *     the T1 computes in dollars and cents, so exact-cents arithmetic matches
  *     CRA's forms directly.
+ *
+ * Provenance of the descriptions below:
+ *   - STATUTORY references (ITA / ITR section, subsection and paragraph
+ *     numbers, and the dollar figures written into the statute itself, e.g.
+ *     the s. 63(3) $11,000 / $8,000 / $5,000 annual child care expense
+ *     amounts) are verified verbatim against the committed, mirror-checked
+ *     LIMS consolidations in docs/sources/ via tools/lims-chunker.
+ *   - T1 LINE NUMBERS (e.g. "line 30400") are navigational aids for a human
+ *     reader, taken from the CRA return layout. canada.ca is not reachable
+ *     from this environment, so they are NOT pinned to primary authority and
+ *     must not be treated as citations. When Phase 2 rules land, the binding
+ *     authority in each rule's `citation` is the ITA/ITR provision — never a
+ *     line number. Re-verify the line numbers against the official T1 when
+ *     the CRA parameter pack is delivered.
+ *   - No INDEXED dollar amount (BPA, bracket thresholds, medical floor) is
+ *     stated anywhere in this file; those are still pending the CRA
+ *     parameter pack and must not be introduced here without a citation.
  */
 
 import type { FactSpec } from "@invaro/opentax-core";
@@ -75,6 +92,14 @@ export const facts: FactSpec[] = [
       rationale: "Assumed under 65 absent contrary input",
     },
   },
+  {
+    id: "birthYear",
+    type: "int",
+    min: "1900",
+    description:
+      "Calendar year of birth — the exact-age input for rules whose age band the boolean age facts cannot express. Chief consumer is the CWB, but note s. 122.7(1) 'eligible individual' is NOT an age test alone: it requires residence in Canada throughout the year (conjunctive) and then ANY ONE of (a) 19 or older at year end, (b) being the cohabiting spouse or common-law partner of another individual, or (c) being the parent of a child with whom the individual resides — so an 18-year-old parent, or one with a cohabiting partner, qualifies. Age alone must never be used to DENY the CWB. The age amount stays gated on isAge65OrOlder (s. 118(2)); this fact is consulted only where a rule names it.",
+    // no default — the engine must never guess the taxpayer's age
+  },
 
   // ---- spouse ----
   {
@@ -85,6 +110,83 @@ export const facts: FactSpec[] = [
       "Spouse's or common-law partner's net income (their line 23600), in dollars — drives the spousal amount (ITA s. 118(1)(a)) and credit transfers.",
     // no default — guessing $0 would maximize the spousal amount; the
     // engine refuses when a spousal computation needs it and it is absent
+  },
+  {
+    id: "spouseIsAge65OrOlder",
+    type: "bool",
+    description:
+      "Spouse or common-law partner was 65 or older at the end of the taxation year — gates the spouse's own age amount (ITA s. 118(2)), which is one of the credits transferable to the taxpayer under s. 118.8 (Schedule 2; T1 line 32600).",
+    default: {
+      value: false,
+      rationale: "Assumed spouse under 65 absent contrary input",
+    },
+  },
+
+  // ---- dependants ----
+  {
+    id: "hasEligibleDependant",
+    type: "bool",
+    description:
+      "Every condition of the amount for an eligible dependant is met (ITA para. 118(1)(b); T1 line 30400). The paragraph is conjunctive and this fact attests to ALL of it: the individual claims no para. 118(1)(a) spousal deduction for the year; AND at some time in the year (i) is either unmarried and not living common-law, or is married/common-law but neither supported nor lived with that spouse or partner and is not supported by them — note a taxpayer living with a high-income spouse computes a NIL spousal amount yet is still barred here; AND (ii) maintains a self-contained domestic establishment in which they live and actually supports there a person who is (A) resident in Canada except where that person is the individual's child, (B) wholly dependent for support, (C) related to the individual, and (D) except for a parent or grandparent, either under 18 or dependent by reason of mental or physical infirmity. ATTESTED — the corpus tests none of these limbs.",
+    default: {
+      value: false,
+      rationale: "Assumed no eligible dependant claim absent contrary input",
+    },
+  },
+  {
+    id: "eligibleDependantNetIncome",
+    type: "money",
+    min: "0",
+    description:
+      "Income for the year of the person claimed as an eligible dependant — D.1 in the ITA para. 118(1)(b) formula 'D + D.01 - D.1', where D.1 'is the dependent person's income for the year', so it reduces the amount dollar for dollar. Statutory 'income for the year' is the s. 3 figure the dependant reports as net income (their line 23600). In dollars.",
+    // no default — guessing $0 would maximize the eligible-dependant amount;
+    // the engine refuses when the para. 118(1)(b) computation needs it and it
+    // is absent
+  },
+  {
+    id: "numChildrenUnder7",
+    type: "int",
+    min: "0",
+    description:
+      "Number of ITA s. 63(3) 'eligible children' under 7 years of age at the end of the year — the $8,000 annual child care expense amount band (subpara. 63(3)(b)(i) of that definition). A child in respect of whom the s. 118.3 disability amount may be deducted goes in numChildrenWithDisabilityCert instead.",
+    default: {
+      value: "0",
+      rationale: "Assumed no children under 7 absent contrary input",
+    },
+  },
+  {
+    id: "numOtherEligibleChildren",
+    type: "int",
+    min: "0",
+    description:
+      "Number of ITA s. 63(3) 'eligible children' who are neither under 7 at the end of the year nor eligible for the s. 118.3 disability amount — the $5,000 annual child care expense amount band (subpara. 63(3)(b)(ii)). An 'eligible child' of a taxpayer (s. 63(3)) must FIRST be (a) a child of the taxpayer or of the taxpayer's spouse or common-law partner, or (b) a child dependent on the taxpayer or that spouse or partner for support and whose income for the year does not exceed the amount determined for F in s. 118(1.1) — AND THEN satisfy (c) being under 16 at any time in the year, or (d) being dependent on the taxpayer or that spouse or partner and having a mental or physical infirmity. Limbs (a)/(b) are as necessary as (c)/(d).",
+    default: {
+      value: "0",
+      rationale: "Assumed no other eligible children absent contrary input",
+    },
+  },
+  {
+    id: "numChildrenWithDisabilityCert",
+    type: "int",
+    min: "0",
+    description:
+      "Number of ITA s. 63(3) 'eligible children' in respect of whom an amount may be deducted under s. 118.3 — the $11,000 annual child care expense amount band (para. (a) of that definition). Counted here INSTEAD of in numChildrenUnder7 / numOtherEligibleChildren, never in both.",
+    default: {
+      value: "0",
+      rationale:
+        "Assumed no children eligible for the disability amount absent contrary input",
+    },
+  },
+  {
+    id: "numDependantsUnder19",
+    type: "int",
+    min: "0",
+    description:
+      "Number of ITA s. 122.7(1) 'eligible dependants' for the Canada Workers Benefit: children of the taxpayer who, at the end of the year, resided with the taxpayer, were under 19 years of age, and were not themselves CWB 'eligible individuals'. The s. 122.7(2) formula uses only whether this count is positive — it selects the with-spouse-or-dependant basic amount and phase-out threshold — but the count is carried for Schedule 6 and the milestone-2 benefit targets.",
+    default: {
+      value: "0",
+      rationale: "Assumed no dependants under 19 absent contrary input",
+    },
   },
 
   // ---- income ----
@@ -163,6 +265,17 @@ export const facts: FactSpec[] = [
     },
   },
   {
+    id: "rrspWithdrawals",
+    type: "money",
+    min: "0",
+    description:
+      "Benefits received in the year out of or under registered retirement savings plans (ITA s. 146(8); T4RSP; T1 line 12900), in dollars. EXCLUDES Home Buyers' Plan and Lifelong Learning Plan withdrawals, which are 'excluded withdrawals' as defined in ss. 146.01(1)/146.02(1) and are not income under s. 146(8). Tax withheld at source is a payment on account, not part of this amount.",
+    default: {
+      value: "0",
+      rationale: "Assumed no RRSP withdrawals absent contrary input",
+    },
+  },
+  {
     id: "cppQppBenefits",
     type: "money",
     min: "0",
@@ -206,6 +319,28 @@ export const facts: FactSpec[] = [
     default: {
       value: "0",
       rationale: "Assumed no RRSP deduction absent contrary input",
+    },
+  },
+  {
+    id: "unionDues",
+    type: "money",
+    min: "0",
+    description:
+      "Annual union, professional, and like dues deductible under ITA para. 8(1)(i) — annual professional membership dues whose payment was necessary to maintain a professional status recognized by statute (subpara. (i)), annual trade-union dues (subparas. (iv)–(v)), parity or advisory committee dues required under provincial law (subpara. (vi)), and professions-board dues (subpara. (vii)) — to the extent not reimbursed (T4 box 44 or receipts; T1 line 21200). In dollars.",
+    default: {
+      value: "0",
+      rationale: "Assumed no union or professional dues absent contrary input",
+    },
+  },
+  {
+    id: "childcareExpenses",
+    type: "money",
+    min: "0",
+    description:
+      "Child care expenses paid in the year for an eligible child (ITA s. 63; Form T778; T1 line 21400), in dollars. The corpus applies the para. 63(1)(e) ceiling — the lesser of 2/3 of earned income and the total of the annual child care expense amounts implied by the numChildrenUnder7 / numOtherEligibleChildren / numChildrenWithDisabilityCert counts — and the s. 63(2) rule that the lower-income supporting person normally makes the claim.",
+    default: {
+      value: "0",
+      rationale: "Assumed no child care expenses absent contrary input",
     },
   },
 
@@ -252,6 +387,42 @@ export const facts: FactSpec[] = [
     default: {
       value: "0",
       rationale: "Assumed no student loan interest absent contrary input",
+    },
+  },
+  {
+    id: "hasDisabilityTaxCert",
+    type: "bool",
+    description:
+      "A medical practitioner has certified in prescribed form (Form T2201) that the taxpayer has a severe and prolonged impairment in physical or mental functions meeting ITA para. 118.3(1)(a.2) or (a.3), and the certificate has been filed with the Minister (para. 118.3(1)(b)) — gates the disability amount (T1 line 31600) and the CWB disability supplement (s. 122.7(3)).",
+    default: {
+      value: false,
+      rationale:
+        "Assumed no certified disability tax credit eligibility absent contrary input",
+    },
+  },
+
+  // ---- payroll ----
+  {
+    id: "cppContributionsPaid",
+    type: "money",
+    min: "0",
+    description:
+      "Total employee CPP (or QPP) contributions withheld on employment income for the year (T4 boxes 16 + 16A, or 17 + 17A), in dollars. Schedule 8 splits this: the base contribution under CPP s. 8(1) supports the credit in ITA para. 118.7(b) (T1 line 30800), while the enhanced contributions under CPP ss. 8(1.1)/(1.2) are DEDUCTED under ITA para. 60(e.1) (T1 line 22215) rather than credited. Contributions on self-employment earnings are computed by the corpus from selfEmploymentIncome, not entered here.",
+    default: {
+      value: "0",
+      rationale:
+        "Assumed no CPP/QPP contributions withheld absent contrary input",
+    },
+  },
+  {
+    id: "eiPremiumsPaid",
+    type: "money",
+    min: "0",
+    description:
+      "Employee Employment Insurance premiums withheld on employment income for the year (T4 box 18; T1 line 31200), in dollars — the ITA para. 118.7(a) credit, which the statute caps at the maximum premiums payable by the individual for the year under the Employment Insurance Act. Quebec parental insurance plan premiums, credited separately under paras. 118.7(a.1)/(a.2), are not modelled in v1.",
+    default: {
+      value: "0",
+      rationale: "Assumed no EI premiums withheld absent contrary input",
     },
   },
 ];

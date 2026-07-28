@@ -6,7 +6,10 @@
     "NOT AGPL-3.0 like the engine. It is loaded by the engine as data.",
     "INERT BY DESIGN: no 'build' script yet, so the root 'pnpm -r build' skips this package",
     "(pnpm recursive run only executes packages that define the script). Use 'typecheck'",
-    "manually once workspace deps are installed. Wire into the build in Phase 2."
+    "manually once workspace deps are installed. Wire into the build in Phase 2.",
+    "'gen:lock' deliberately calls tsc inline instead of adding a 'build' script, so this",
+    "package stays skipped by 'pnpm -r build'. Renaming that step to 'build' is a Phase 2",
+    "decision, not a drive-by edit."
   ],
   "name": "@opencantax/corpus-ca-federal",
   "version": "0.1.0",
@@ -26,7 +29,8 @@
     "dist"
   ],
   "scripts": {
-    "typecheck": "tsc -p tsconfig.json --noEmit"
+    "typecheck": "tsc -p tsconfig.json --noEmit",
+    "gen:lock": "tsc -p tsconfig.json && node scripts/gen-lock.mjs"
   },
   "dependencies": {
     "@invaro/opentax-core": "workspace:*"
