@@ -4,3 +4,15 @@ dist/
 *.log
 .DS_Store
 .env*
+
+# Local-only reference documents (CRA form packages, etc.). These are Crown
+# copyright on different terms from the SI/97-5 consolidations in
+# docs/sources/, and this repo ships a commercial licence — so they stay out
+# of git until that question is settled in docs/SOURCES-CA.md. Parameter
+# VALUES extracted from them are committed (facts are not copyrightable);
+# the documents themselves are not.
+# Exclude the CONTENTS, not the directory itself: git does not descend into
+# an excluded directory, so a `!` re-include under `docs/reference-local/`
+# would never match and the README would vanish too.
+docs/reference-local/*
+!docs/reference-local/README.md
