@@ -25,12 +25,17 @@ import { existsSync, readFileSync } from "node:fs";
 import path from "node:path";
 import { loadCorpus } from "@invaro/opentax-core";
 import { describe, expect, it } from "vitest";
-import { corpusInput, getCorpus } from "../src/index.js";
+import { DEFAULT_TARGET, corpusInput, getCorpus } from "../src/index.js";
 
 interface Lock {
   name: string;
   version: string;
   merkleRoot: string;
+  /**
+   * Present in this corpus's lock (not the US one): the declared default
+   * target. Recorded rather than hashed — see the note in gen-lock.mjs.
+   */
+  defaultTarget?: string;
   ruleCount: number;
   /** Present in this corpus's lock (not the US one): fact-catalog size. */
   factCount?: number;
@@ -55,6 +60,18 @@ describe("corpus.lock.json", () => {
 
   it.runIf(lockExists)("merkle root matches the committed lock", () => {
     expect(corpus.merkleRoot).toBe(lock!.merkleRoot);
+  });
+
+  // DEFAULT_TARGET is the question the CLI answers when the caller names
+  // none, so silently repointing it changes what the engine is FOR. It is
+  // not a merkle leaf (core hashes rules + facts only), so without this gate
+  // a retarget moves no hash and shows up nowhere in review.
+  it.runIf(lockExists)("the default target matches the committed lock", () => {
+    expect(
+      lock!.defaultTarget,
+      "corpus.lock.json has no defaultTarget — regenerate with `pnpm -F @opencantax/corpus-ca-federal gen:lock`",
+    ).toBeDefined();
+    expect(DEFAULT_TARGET).toBe(lock!.defaultTarget);
   });
 
   it.runIf(lockExists)("every rule hash matches the committed lock", () => {

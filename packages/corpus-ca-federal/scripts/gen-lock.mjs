@@ -66,13 +66,20 @@ if (newestMtime(path.join(pkgRoot, "src")) > distMtime) {
   process.exit(1);
 }
 
-const { getCorpus } = await import("../dist/index.js");
+const { getCorpus, DEFAULT_TARGET } = await import("../dist/index.js");
 
 const corpus = getCorpus();
 const lock = {
   name: corpus.name,
   version: corpus.version,
   merkleRoot: corpus.merkleRoot,
+  // Recorded, NOT hashed. core's merkleRoot() covers rules + facts only, so
+  // DEFAULT_TARGET — the question the CLI answers when the caller names none —
+  // could otherwise be repointed without moving a single hash. Pinning it here
+  // puts a retarget in the lock diff where review will see it. Deliberately a
+  // sibling field rather than a merkle leaf: widening the hash would churn
+  // every recorded root, and the goal is visibility, not tamper-evidence.
+  defaultTarget: DEFAULT_TARGET,
   ruleCount: corpus.rules.length,
   factCount: corpus.facts.length,
   rules: Object.fromEntries(
@@ -89,3 +96,4 @@ writeFileSync(dest, JSON.stringify(lock, null, 2) + "\n");
 console.log(`wrote ${dest}`);
 console.log(`merkle root: ${corpus.merkleRoot}`);
 console.log(`rules: ${lock.ruleCount}  facts: ${lock.factCount}`);
+console.log(`default target: ${lock.defaultTarget}`);

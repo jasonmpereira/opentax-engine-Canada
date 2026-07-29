@@ -2,6 +2,7 @@
   "name": "@opencantax/corpus-ca-federal",
   "version": "0.1.0",
   "merkleRoot": "sha256:c385c1e8005b03512e442c9a67a6c11fb93a2101ed86a2bc568ac967fe1eaf1a",
+  "defaultTarget": "ca.federal.net_tax",
   "ruleCount": 0,
   "factCount": 33,
   "rules": {}
