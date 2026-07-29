@@ -1,6 +1,6 @@
 # M0 Exit Checklist
 
-M0 exits only when every gate below is checked, or explicitly waived under the waiver authority. Status as of 2026-07-26.
+M0 exits only when every gate below is checked, or explicitly waived under the waiver authority. Status as of 2026-07-28.
 
 - [x] **ITA dates pinned** — CLOSED 2026-07-27: Justice Laws consolidations
   received from Jason and committed under `docs/sources/` in PDF + LIMS XML.

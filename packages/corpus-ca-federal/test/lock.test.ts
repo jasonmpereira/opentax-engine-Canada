@@ -23,8 +23,9 @@
 
 import { existsSync, readFileSync } from "node:fs";
 import path from "node:path";
+import { loadCorpus } from "@invaro/opentax-core";
 import { describe, expect, it } from "vitest";
-import { getCorpus } from "../src/index.js";
+import { corpusInput, getCorpus } from "../src/index.js";
 
 interface Lock {
   name: string;
@@ -96,7 +97,8 @@ describe("corpus.lock.json", () => {
   });
 
   it("the merkle root is stable across loads", () => {
-    // getCorpus() caches; loading twice must not depend on that cache.
-    expect(getCorpus().merkleRoot).toBe(corpus.merkleRoot);
+    // getCorpus() caches, so comparing getCorpus() to itself would be a
+    // tautology — load fresh to prove the root does not depend on the cache.
+    expect(loadCorpus(corpusInput).merkleRoot).toBe(corpus.merkleRoot);
   });
 });

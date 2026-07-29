@@ -124,8 +124,16 @@ overstates the breadth. Re-probing found the allowlist is **selective**:
 |---|---|
 | `raw.githubusercontent.com` | **200** — full file bodies, no size limit hit at 14 MB |
 | `github.com` (git transport) | **allowed** — `git clone` / `ls-remote` work |
-| `api.github.com` | 403 |
-| `www.canada.ca`, `laws-lois.justice.gc.ca`, `web.archive.org`, `irs.gov` | 403 |
+| `api.github.com` | 403 on repo endpoints — per-repo gate, not the allowlist (see note) |
+| `www.canada.ca`, `laws-lois.justice.gc.ca`, `web.archive.org`, `irs.gov` | 403 at CONNECT (host-denied) |
+
+Note on `api.github.com`: unlike the canada.ca / laws-lois / web.archive.org /
+irs.gov rows, which fail at CONNECT (host-denied by the allowlist), CONNECT to
+`api.github.com` succeeds and its root URL returns 200. The 403 is an
+application-layer JSON response the agent proxy injects for repositories not
+attached to the session ("use add_repo"). So the API route is per-repo gated,
+not host-denied — it can work for session-attached repos, but remains unusable
+for the `justicecanada` mirror; raw/git stays the working route.
 
 **This does not unblock anything in the backlog above** — the NETFILE
 certified-software table and the T4032 PDFs exist only on canada.ca, and no

@@ -155,9 +155,13 @@ class income_tax_before_refundable_credits(Variable):
 ```
 
 **Both defects are confirmed present at `389648ad`, and the snippets quoted
-earlier in this file reproduce these bodies verbatim** — character-for-character
-identical apart from the class-body indentation, which was stripped above for
-readability. The `documentation = "Example income tax regime"` self-description
+earlier in this file are excerpts of these bodies** — every line the snippets
+contain is character-for-character identical to upstream, apart from the
+class-body indentation, which was stripped above for readability. They are
+excerpts, not full bodies: snippet 1 omits the surrounding import, class
+header, and class-attribute lines, and snippet 2 additionally omits the
+`def formula(person, period, parameters):` signature line of the formula it
+quotes. The `documentation = "Example income tax regime"` self-description
 cited in defect 1 is present as quoted. The vendored copies of both files hash
 to the same blobs as upstream.
 

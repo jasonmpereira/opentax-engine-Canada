@@ -52,13 +52,16 @@ ITA current to 2026-06-14 / last amended 2026-04-01, ITR current to
 2026-03-31 / last amended 2026-03-26. The mirror's 2026-07-24 refresh did not
 move either instrument, so nothing is stale.
 
-> **Comparing by hand?** The mirror serves these files with a UTF-8 BOM and
-> `encoding="utf-8"` in the XML declaration; the copies committed here have
-> neither. That is a 20-byte header difference and nothing else. A plain
-> `sha256sum` against the mirror's bytes will *not* match the hashes in the
-> table above — those are computed on the normalized form (BOM stripped,
-> declaration reduced to `<?xml version="1.0"?>`). Use the tool below, which
-> normalizes before hashing and never rewrites the body.
+> **Comparing by hand?** A plain `sha256sum` of each *committed* file
+> reproduces its hash in the table above — the committed XML copies are
+> stored already normalized, and the PDF hashes are simply the raw sha256 of
+> the committed bytes (the mirror serves no PDFs, so there is no mirror
+> comparison for those two rows). What will *not* match is hashing the
+> mirror's XML bytes directly: the mirror serves the XML with a UTF-8 BOM
+> and `encoding="utf-8"` in the declaration — a 20-byte header difference
+> and nothing else. Normalize first (BOM stripped, declaration reduced to
+> `<?xml version="1.0"?>`), or use the tool below, which does so and never
+> rewrites the body.
 
 ### Consolidation-update workflow
 

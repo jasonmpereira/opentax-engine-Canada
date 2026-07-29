@@ -3,8 +3,10 @@
 
 Justice Canada publishes every consolidated federal instrument as XML on
 GitHub (justicecanada/laws-lois-xml), refreshed roughly biweekly. This
-checks each file under docs/sources/ against that mirror and reports
-whether a newer consolidation is available. Python 3 stdlib only.
+checks the LIMS XML consolidations listed in SOURCES below against that
+mirror and reports whether a newer consolidation is available. (The PDFs
+under docs/sources/ are not covered — the mirror serves no PDFs; add a
+SOURCES row when a new XML instrument is vendored.) Python 3 stdlib only.
 """
 from __future__ import annotations
 
@@ -39,13 +41,19 @@ ROOT_TAG = re.compile(r"<(Statute|Regulation)\b[^>]*>")
 
 
 def normalize(raw: bytes) -> bytes:
-    """Canonical form for hashing: no BOM, bare XML declaration.
+    """Comparison form for hashing: strip any BOM; reduce an existing XML
+    declaration to ``<?xml version="1.0"?>``.
 
     The mirror serves these files with a UTF-8 BOM and an
     ``encoding="utf-8"`` declaration; the copies under docs/sources/ were
     saved without either. That is a 20-byte header difference and nothing
     else, so comparing raw bytes reports drift on files whose legal text is
     identical. Only the header is touched — the body is never rewritten.
+
+    This is a header rewrite, not true canonicalization: input with no
+    declaration is left without one, and any version/standalone attributes
+    are collapsed. Adequate for this mirror, which consistently serves a
+    BOM plus ``<?xml version="1.0" encoding="utf-8"?>``.
     """
     if raw.startswith(b"\xef\xbb\xbf"):
         raw = raw[3:]
@@ -115,17 +123,38 @@ def check(entry: dict, repo_root: Path, ref: str, timeout: int, update: bool) ->
     )
 
     new_date = their_dates.get("lims:current-date")
-    if new_date:
-        stem = Path(entry["local"]).name.split("-consolidated-")[0]
-        suggested = f"docs/sources/{stem}-consolidated-{new_date}.xml"
-        print(f"         -> vendor as {suggested}, then update:")
-        print("            docs/sources/README.md contents table (file + sha256)")
-        print("            docs/SOURCES-CA.md registry row (revision-date)")
-        print("            any rule Citation pinning the old consolidation")
+    if not new_date:
+        print(
+            "         -> mirror copy has no lims:current-date; cannot derive a\n"
+            "            date-stamped filename. Inspect the mirror file by hand."
+        )
         if update:
-            out = repo_root / suggested
-            out.write_bytes(theirs)
-            print(f"         WROTE {suggested} (normalized; review before commit)")
+            print("         SKIPPED --update: no lims:current-date to name the new file")
+        return False
+
+    stem = Path(entry["local"]).name.split("-consolidated-")[0]
+    suggested = f"docs/sources/{stem}-consolidated-{new_date}.xml"
+    out = repo_root / suggested
+    if suggested == entry["local"] or out.exists():
+        # Drift without a date bump (mirror erratum/markup fix, or local
+        # corruption): the derived name is a file that already exists —
+        # usually the very file being checked. Never overwrite it silently.
+        print(
+            f"         -> mirror current-date is unchanged ({new_date}): body drift,\n"
+            f"            not a new consolidation. Diff {entry['local']} against the\n"
+            f"            mirror by hand before replacing anything."
+        )
+        if update:
+            print(f"         SKIPPED --update: refusing to overwrite existing {suggested}")
+        return False
+
+    print(f"         -> vendor as {suggested}, then update:")
+    print("            docs/sources/README.md contents table (file + sha256)")
+    print("            docs/SOURCES-CA.md registry row (revision-date)")
+    print("            any rule Citation pinning the old consolidation")
+    if update:
+        out.write_bytes(theirs)
+        print(f"         WROTE {suggested} (normalized; review before commit)")
     return False
 
 
@@ -139,7 +168,8 @@ def main() -> int:
         "--update",
         action="store_true",
         help="on drift, write the mirror's version into docs/sources/ under a "
-        "date-stamped name (does not edit the registry or delete the old file)",
+        "date-stamped name (does not edit the registry or delete the old file; "
+        "never overwrites an existing file)",
     )
     args = ap.parse_args()
 

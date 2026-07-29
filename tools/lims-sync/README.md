@@ -42,8 +42,10 @@ text is identical.
 `normalize()` strips the BOM and rewrites the declaration to
 `<?xml version="1.0"?>` before hashing. The body is never touched. This is
 also why the sha256 values in the registry match the normalized form, not
-the bytes the mirror serves — recompute with `normalize()`, not
-`sha256sum`, when checking a registry hash by hand.
+the bytes the mirror serves. The committed copies are stored already
+normalized, so a plain `sha256sum` of a committed file reproduces its
+registry hash directly; it is only mirror-served bytes that must go
+through `normalize()` before hashing.
 
 ## Adding an instrument
 

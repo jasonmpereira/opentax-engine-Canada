@@ -97,7 +97,7 @@ export const facts: FactSpec[] = [
     type: "int",
     min: "1900",
     description:
-      "Calendar year of birth — the exact-age input for rules whose age band the boolean age facts cannot express. Chief consumer is the CWB, but note s. 122.7(1) 'eligible individual' is NOT an age test alone: it requires residence in Canada throughout the year (conjunctive) and then ANY ONE of (a) 19 or older at year end, (b) being the cohabiting spouse or common-law partner of another individual, or (c) being the parent of a child with whom the individual resides — so an 18-year-old parent, or one with a cohabiting partner, qualifies. Age alone must never be used to DENY the CWB. The age amount stays gated on isAge65OrOlder (s. 118(2)); this fact is consulted only where a rule names it.",
+      "Calendar year of birth — the exact-age input for rules whose age band the boolean age facts cannot express. Chief consumer is the CWB, but note s. 122.7(1) 'eligible individual' is NOT an age test alone: it means an individual (other than an 'ineligible individual') who was resident in Canada throughout the year and who was, at the end of the taxation year, ANY ONE of (a) 19 or older, (b) the cohabiting spouse or common-law partner of another individual, or (c) the parent of a child with whom the individual resides — so an 18-year-old parent, or one with a cohabiting partner, CAN qualify, but only if not an 'ineligible individual' under s. 122.7(1): a person described in para. 149(1)(a) or (b) at any time in the year, a full-time student at a designated educational institution for a total of more than 13 weeks in the year (except where they have an eligible dependant for the year), or a person confined to a prison or similar institution for at least 90 days in the year. Age alone must never be used to DENY the CWB. The age amount stays gated on isAge65OrOlder (s. 118(2)); this fact is consulted only where a rule names it.",
     // no default — the engine must never guess the taxpayer's age
   },
 
@@ -236,7 +236,7 @@ export const facts: FactSpec[] = [
     type: "money",
     min: "0",
     description:
-      "Interest and other investment income (ITA para. 12(1)(c); T1 line 12100), in dollars.",
+      "Interest income (ITA para. 12(1)(c)) and other investment income reported on T1 line 12100, in dollars. Para. 12(1)(c) covers interest only; the line's other components (e.g. foreign investment income, income from trusts) arise under other inclusion provisions and need their own citations when modelled.",
     default: {
       value: "0",
       rationale: "Assumed no interest income absent contrary input",
@@ -269,7 +269,7 @@ export const facts: FactSpec[] = [
     type: "money",
     min: "0",
     description:
-      "Benefits received in the year out of or under registered retirement savings plans (ITA s. 146(8); T4RSP; T1 line 12900), in dollars. EXCLUDES Home Buyers' Plan and Lifelong Learning Plan withdrawals, which are 'excluded withdrawals' as defined in ss. 146.01(1)/146.02(1) and are not income under s. 146(8). Tax withheld at source is a payment on account, not part of this amount.",
+      "Benefits received in the year out of or under registered retirement savings plans (ITA s. 146(8); T4RSP; T1 line 12900), in dollars. EXCLUDES Home Buyers' Plan and Lifelong Learning Plan withdrawals, which are 'excluded withdrawals' as defined in ss. 146.01(1)/146.02(1) and are not income under s. 146(8). Enter the GROSS amount before withholding: tax withheld at source is deemed by s. 153(3) to have been received by the taxpayer, so it forms part of the s. 146(8) income inclusion; the withholding is claimed separately as tax paid on account, not netted against this amount.",
     default: {
       value: "0",
       rationale: "Assumed no RRSP withdrawals absent contrary input",
@@ -326,7 +326,7 @@ export const facts: FactSpec[] = [
     type: "money",
     min: "0",
     description:
-      "Annual union, professional, and like dues deductible under ITA para. 8(1)(i) — annual professional membership dues whose payment was necessary to maintain a professional status recognized by statute (subpara. (i)), annual trade-union dues (subparas. (iv)–(v)), parity or advisory committee dues required under provincial law (subpara. (vi)), and professions-board dues (subpara. (vii)) — to the extent not reimbursed (T4 box 44 or receipts; T1 line 21200). In dollars.",
+      "Annual union, professional, and like dues deductible under ITA para. 8(1)(i) — annual professional membership dues whose payment was necessary to maintain a professional status recognized by statute (subpara. (i)), annual trade-union dues (subparas. (iv)–(v)), parity or advisory committee dues required under provincial law (subpara. (vi)), and professions-board dues (subpara. (vii)) — to the extent the taxpayer has not been reimbursed AND is not entitled to be reimbursed in respect thereof (closing words of para. 8(1)(i)) (T4 box 44 or receipts; T1 line 21200). In dollars.",
     default: {
       value: "0",
       rationale: "Assumed no union or professional dues absent contrary input",
@@ -393,7 +393,7 @@ export const facts: FactSpec[] = [
     id: "hasDisabilityTaxCert",
     type: "bool",
     description:
-      "A medical practitioner has certified in prescribed form (Form T2201) that the taxpayer has a severe and prolonged impairment in physical or mental functions meeting ITA para. 118.3(1)(a.2) or (a.3), and the certificate has been filed with the Minister (para. 118.3(1)(b)) — gates the disability amount (T1 line 31600) and the CWB disability supplement (s. 122.7(3)).",
+      "A medical practitioner has certified in prescribed form (Form T2201) that the taxpayer has a severe and prolonged impairment in physical or mental functions meeting ITA para. 118.3(1)(a.2) or (a.3), and the certificate has been filed with the Minister (para. 118.3(1)(b)) — gates the disability amount (T1 line 31600) and the CWB disability supplement (s. 122.7(3), which requires that the individual 'may deduct an amount under subsection 118.3(1)'). NOT sufficient alone: para. 118.3(1)(c) is a third conjunctive condition — no amount in respect of remuneration for an attendant, or care in a nursing home, in respect of the individual may be included in a s. 118.2 deduction claimed by anyone (otherwise than because of para. 118.2(2)(b.1)). A rule granting either credit must also check that condition; medicalExpenses is an undifferentiated total that could contain such amounts.",
     default: {
       value: false,
       rationale:
