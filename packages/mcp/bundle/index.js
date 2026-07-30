@@ -22266,7 +22266,10 @@ function evalExpr(expr, rule, ctx, children) {
         return POISON;
       expectType(base, "money", rule, "brackets.base");
       const amount = base.cents;
+      const exact = expr.accumulate === "exact";
       let tax = 0n;
+      let exactNum = 0n;
+      let exactDen = 1n;
       for (let i = 0; i < expr.table.length; i++) {
         const lower = parseCents(expr.table[i].threshold);
         if (amount <= lower)
@@ -22277,7 +22280,17 @@ function evalExpr(expr, rule, ctx, children) {
           num: parseInt_(expr.table[i].rate.num),
           den: parseInt_(expr.table[i].rate.den)
         };
-        tax += mulRate(span, rate2, "half-up");
+        if (exact) {
+          if (rate2.den === 0n)
+            throw new RangeError("rate with zero denominator");
+          exactNum = exactNum * rate2.den + span * rate2.num * exactDen;
+          exactDen *= rate2.den;
+        } else {
+          tax += mulRate(span, rate2, "half-up");
+        }
+      }
+      if (exact) {
+        tax = divRound(exactNum, exactDen, "half-up");
       }
       return { type: "money", cents: tax };
     }

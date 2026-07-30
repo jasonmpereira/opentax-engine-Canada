@@ -1,9 +1,28 @@
 {
   "name": "@opencantax/corpus-ca-federal",
   "version": "0.1.0",
-  "merkleRoot": "sha256:c385c1e8005b03512e442c9a67a6c11fb93a2101ed86a2bc568ac967fe1eaf1a",
+  "merkleRoot": "sha256:a38651cf5f48a17fb1e40369d643869d236eb2d5e357f469d25762867b3142b4",
   "defaultTarget": "ca.federal.net_tax",
-  "ruleCount": 0,
+  "ruleCount": 18,
   "factCount": 33,
-  "rules": {}
+  "rules": {
+    "ca.federal.business_income@1": "sha256:c1ad65cedde7f8b345dc5b03cb6b2ed56e4b26b6849d1ee0d1dbb35096217ab3",
+    "ca.federal.child_care_expenses@1": "sha256:36bc2a38f646439b1d4785d6584746fc763a89bf39f27d63fadc867f365ef70e",
+    "ca.federal.division_c_deductions@1": "sha256:96f5ed18b9e66962c42b34ba9b1ce4c352b83bfc264c1d6c1fe51f6569131c6c",
+    "ca.federal.employment_income@1": "sha256:959c4efa2aff962cabe08365fb4158cc7df1740dfad402205c1e7d3d170c11e1",
+    "ca.federal.interest_income@1": "sha256:b95fdc051f80683338232e3f81f85f22096e8903bd76da8dc661458d6de69b6f",
+    "ca.federal.net_capital_losses@1": "sha256:6203a23dc778c09047e99d6015ef58bcf83fefdc438445f85205562a4d37f0cf",
+    "ca.federal.net_income@1": "sha256:da6c9805d0ffff8debb8f7d6c4307db0814b5ff1eeb6027da9310eb08e38c79c",
+    "ca.federal.pension_and_benefit_income@1": "sha256:dc618f48e69a02ab77dcbebd9dac0395cd6c62ab16640178a0ed4b47ce25227e",
+    "ca.federal.rrsp_deduction@1": "sha256:28a2f93ca35c1873fd26be4c5561ac8d5059f43c33578d46dd1a3f250317c576",
+    "ca.federal.tax_before_credits@1": "sha256:bd3f9b03cacab7adbe5efff4a4fb9ce7fd886994ad2082f01d75065cf5b3758a",
+    "ca.federal.taxable_capital_gains@1": "sha256:867b5d24fe1969715a6c9ee4993a338bda4250ae335dc3134176b45260f4dc94",
+    "ca.federal.taxable_dividends@1": "sha256:3b8fa38cca968e6204867d115fed6825c889426ab57d6404a91b26e70cb8d59e",
+    "ca.federal.taxable_eligible_dividends@1": "sha256:5920cc82210a1d4a81c175da09564e5f0216feb5c0ef0823ac78e5a50affc346",
+    "ca.federal.taxable_income@1": "sha256:90f3ce4e74c382334410ef3780cb3b9ad5a154fa7801da10db754fa20b04a629",
+    "ca.federal.taxable_non_eligible_dividends@1": "sha256:70dd8730d767bed70818596bb625b33433588eff9f3c2f2f0298097b3824379b",
+    "ca.federal.total_deductions@1": "sha256:d7dc77896e1bb457f10491fdb03422526c3ff9cd8705784414a0dcb42c8f3589",
+    "ca.federal.total_income@1": "sha256:8c2d8a50f627ce8c73e1ff84942472cf5392c4512ee52dd990e79577e0c885cb",
+    "ca.federal.union_and_professional_dues@1": "sha256:6680575ecfc8160bccd4c0633b3f2cebd5be3f75099460550900a0ba45860dfb"
+  }
 }

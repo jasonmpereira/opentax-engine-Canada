@@ -511,7 +511,13 @@ function evalExpr(
       if (base === POISON) return POISON;
       expectType(base, "money", rule, "brackets.base");
       const amount = (base as { cents: bigint }).cents;
+      const exact = expr.accumulate === "exact";
+      // "exact" accumulates as a rational (num/den) and rounds once at the
+      // end; the default rounds each term half-up and sums. See the note on
+      // the brackets node in ast.ts for why Canada requires the former.
       let tax = 0n;
+      let exactNum = 0n;
+      let exactDen = 1n;
       for (let i = 0; i < expr.table.length; i++) {
         const lower = parseCents(expr.table[i].threshold);
         if (amount <= lower) break;
@@ -524,8 +530,17 @@ function evalExpr(
           num: parseInt_(expr.table[i].rate.num),
           den: parseInt_(expr.table[i].rate.den),
         };
-        // each bracket term rounds half-up to the cent, then sums exactly
-        tax += mulRate(span, rate, "half-up");
+        if (exact) {
+          if (rate.den === 0n) throw new RangeError("rate with zero denominator");
+          // exactNum/exactDen += (span * rate.num) / rate.den
+          exactNum = exactNum * rate.den + span * rate.num * exactDen;
+          exactDen *= rate.den;
+        } else {
+          tax += mulRate(span, rate, "half-up");
+        }
+      }
+      if (exact) {
+        tax = divRound(exactNum, exactDen, "half-up");
       }
       return { type: "money", cents: tax };
     }

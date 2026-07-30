@@ -52,13 +52,30 @@ const PLAUSIBLE_FACTS = {
 const AS_OF_DATES = ["2025-01-01", "2025-12-31", "2026-07-28"];
 
 describe("corpus loads", () => {
-  it("getCorpus() succeeds and reports zero rules", () => {
+  it("getCorpus() succeeds and loads the Phase 2 slice-1 rules", () => {
     const corpus = getCorpus();
-    expect(corpus.rules).toEqual([]);
-    expect(corpus.ruleHashes.size).toBe(0);
-    expect(corpus.byId.size).toBe(0);
-    // The fact catalog is real even though the rule set is empty.
+    // Slice 1 (income -> federal tax before credits) has landed, so the rule
+    // set is no longer empty. What matters for this suite is that loading
+    // succeeds and that the chain below still stops short of net tax.
+    expect(corpus.rules.length).toBeGreaterThan(0);
+    expect(corpus.ruleHashes.size).toBe(corpus.rules.length);
     expect(corpus.facts.length).toBeGreaterThan(0);
+    // The slice-1 chain is present end to end...
+    for (const id of [
+      "ca.federal.total_income",
+      "ca.federal.net_income",
+      "ca.federal.taxable_income",
+      "ca.federal.tax_before_credits",
+    ]) {
+      expect(corpus.byId.has(id), `${id} should be loaded`).toBe(true);
+    }
+    // ...and nothing has quietly supplied the credits or the net-tax line.
+    for (const id of [
+      "ca.federal.non_refundable_credits",
+      "ca.federal.net_tax",
+    ]) {
+      expect(corpus.byId.has(id), `${id} must NOT exist yet`).toBe(false);
+    }
   });
 
   it("DEFAULT_TARGET is declared but not modelled", () => {
@@ -147,11 +164,12 @@ describe("every roadmapped target also refuses", () => {
   // refusal, not 0. If Phase 2 lands one of these ids for real, the
   // corresponding case here starts failing and must be replaced with a golden
   // fixture (not deleted).
+  //
+  // Slice 1 did exactly that. total_income, net_income, taxable_income and
+  // tax_before_credits are now REAL rules and have moved out of this list
+  // into golden.test.ts, which checks their values against CRA's own printed
+  // figures. The remainder below are still unmodelled and must still refuse.
   const ROADMAPPED = [
-    "ca.federal.total_income",
-    "ca.federal.net_income",
-    "ca.federal.taxable_income",
-    "ca.federal.tax_before_credits",
     "ca.federal.non_refundable_credits",
     "ca.federal.amt",
     "ca.federal.quebec_abatement",

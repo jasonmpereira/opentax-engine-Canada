@@ -10,37 +10,54 @@
  *
  * PROPRIETARY — separately licensed from the AGPL engine (see ./LICENSE).
  *
- * Phase 1 scaffold: fact catalog only, zero rules. Anything asked of this
- * corpus FAILS LOUD (NoApplicableRule) rather than producing a plausible
- * wrong answer — which is currently everything.
+ * Phase 2, slice 1 (income through federal tax before credits) has landed.
+ * Everything NOT yet modelled still FAILS LOUD (NoApplicableRule, or an
+ * `unsupported` node) rather than producing a plausible wrong answer. In
+ * particular DEFAULT_TARGET — net federal tax, line 42000 — has no rule chain
+ * yet, because the credits that stand between tax-before-credits and net tax
+ * are slice 2. Asking for it refuses, and that is correct.
  */
 
 import { loadCorpus } from "@invaro/opentax-core";
 import type { CorpusInput, LoadedCorpus, Rule } from "@invaro/opentax-core";
 import { facts } from "./facts.js";
+import { capitalGainsRules } from "./rules/capital-gains.js";
+import { deductionRules } from "./rules/deductions.js";
+import { dividendRules } from "./rules/dividends.js";
+import { incomeRules } from "./rules/income.js";
+import { taxBracketRules } from "./rules/tax-brackets.js";
+import { taxableIncomeRules } from "./rules/taxable-income.js";
 
 /**
  * Phase 2 rule files (docs/CANADA-CONVERSION.md), in dependency order.
  * Each lands as ./rules/<file>.ts exporting a Rule[] spread into `rules`.
  *
- * Income → total income (line 15000):
- * TODO(rules/income.ts): employment (s. 5), s. 3 aggregation, interest
- *   (para. 12(1)(c)), pensions, EI, OAS, CPP/QPP benefits
- * TODO(rules/dividends.ts): gross-up — eligible 38% (s. 82(1)(b)(ii)),
- *   non-eligible 15% (s. 82(1)(b)(i))
- * TODO(rules/capital-gains.ts): 1/2 inclusion (ss. 38–39)
- * TODO(rules/self-employment.ts): business income (s. 9)
+ * ── SLICE 1, LANDED: income → federal tax before credits ──
+ * rules/income.ts             employment (s. 5), business (s. 9), interest
+ *                             (para. 12(1)(c)), pensions/CPP/OAS/EI/RRSP
+ *                             (s. 56(1), s. 146(8)), s. 3(a)-(b) aggregation
+ * rules/dividends.ts          gross-up — eligible 38% (s. 82(1)(b)(ii)(D)),
+ *                             non-eligible 15% (s. 82(1)(b)(i)(B))
+ * rules/capital-gains.ts      1/2 inclusion (s. 38(a)); losses REFUSE
+ * rules/deductions.ts         RRSP (s. 146(5)), union dues (para. 8(1)(i));
+ *                             child care (s. 63) refuses when claimed
+ * rules/taxable-income.ts     net income (s. 3(c)), taxable income (s. 2(2))
+ * rules/tax-brackets.ts       s. 117(2) TY2025 — BLENDED 14.5% lowest rate
  *
- * Deductions → net income (23600) / taxable income (26000):
- * TODO(rules/deductions.ts): RRSP (s. 146(5)), CPP enhanced-contribution
- *   deduction (para. 60(e.1)), union dues (para. 8(1)(i))
+ * Business income (s. 9) lives in income.ts rather than a separate
+ * self-employment.ts; the Schedule 8 CPP-on-self-employment computation that
+ * file was to carry is still outstanding below.
+ *
+ * ── SLICE 2, OUTSTANDING ──
+ * Deductions → net income (23600):
+ * TODO(rules/deductions.ts): CPP enhanced-contribution deduction
+ *   (para. 60(e.1)); child care (s. 63) proper computation
  * TODO(rules/social-benefits-repayment.ts): OAS recovery tax (s. 180.2),
  *   EI clawback
- * TODO(rules/taxable-income.ts): line 26000
  *
  * Federal tax:
- * TODO(rules/tax-brackets.ts): s. 117(2) brackets, s. 117.1 indexation —
- *   TY2025 blended 14.5% lowest rate (Bill C-4)
+ * TODO(rules/tax-brackets.ts): a TY2026 version once s. 117.1 indexed
+ *   thresholds are published — 2026 currently refuses, by design
  * TODO(rules/non-refundable-credits.ts): s. 118 family at the appropriate
  *   percentage (14.5% for 2025) — BPA with s. 118(1.1) enhancement
  *   ($16,129 → $14,538 phase-out), spousal, age, Canada employment,
@@ -67,7 +84,18 @@ import { facts } from "./facts.js";
  * TODO(rules/ccb.ts): Canada Child Benefit (s. 122.6)
  * TODO(rules/gst-credit.ts): GST/HST credit (s. 122.5)
  */
-export const rules: Rule[] = [];
+export const rules: Rule[] = [
+  // Dependency order: income sources, then aggregation, then deductions,
+  // then the net/taxable income chain, then tax. Order is documentary — the
+  // engine resolves rule references by id — but keeping it honest makes the
+  // chain readable in the file as well as in a proof.
+  ...incomeRules,
+  ...dividendRules,
+  ...capitalGainsRules,
+  ...deductionRules,
+  ...taxableIncomeRules,
+  ...taxBracketRules,
+];
 
 export const corpusInput: CorpusInput = {
   name: "@opencantax/corpus-ca-federal",

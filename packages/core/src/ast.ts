@@ -62,7 +62,24 @@ export type Expr =
   | { kind: "not"; arg: Expr }
   | { kind: "if"; cond: Expr; then: Expr; else: Expr }
   // tables
-  | { kind: "brackets"; base: Expr; table: BracketRow[] }
+  //
+  // `accumulate` selects how the per-bracket terms combine:
+  //   "per-band" (default) — round each term half-up to the cent, then sum.
+  //     Matches the US rate tables, where each bracket's tax is a whole-cent
+  //     figure in its own right.
+  //   "exact" — accumulate the terms as an exact rational and round ONCE at
+  //     the end. Required where a taxing authority publishes cumulative tax
+  //     figures built from unrounded arithmetic: Canada's T1 Step 5 Part A
+  //     prints $20,081.25 at the $114,750 threshold, which per-band rounding
+  //     cannot reproduce (it yields $20,081.26, because 14.5% of $57,375 is
+  //     exactly half a cent and rounds up before being carried forward).
+  // Omitted = "per-band", so existing corpora are unaffected.
+  | {
+      kind: "brackets";
+      base: Expr;
+      table: BracketRow[];
+      accumulate?: "per-band" | "exact";
+    }
   | {
       kind: "match";
       on: Expr;
