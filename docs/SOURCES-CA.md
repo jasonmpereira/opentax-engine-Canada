@@ -62,8 +62,38 @@ in-repo under `docs/sources/`).
 | cra-itam | CRA Income Tax Audit Manual (ITAM), Domestic Compliance Programs Branch — full manual, pre-chunked | CRA (canada.ca) | guide | Crown | yes (attribution required; held outside the repo pending an intake decision — see registry note) | not captured at scrape time (manifest `date_modified` empty; ITAM chapters carry own revision notes — pin on ingestion) | audit-procedure, taxpayer-rights-relief, penalties, objections-appeals, losses, income-characterization, related-party-transactions, estates-trusts, clearance-certificates, international-audit, audit-techniques | 3 |
 | ita-consolidation | Income Tax Act, R.S.C. 1985, c. 1 (5th Supp.) — Justice Laws consolidation (PDF bilingual 3,827 pp + LIMS XML) | Justice Laws (Department of Justice Canada) | statute consolidation | Crown | yes (attribution + SI/97-5 "not an official version" notice) — **committed in-repo: `docs/sources/ita-consolidated-2026-06-14.pdf`** (`31cc0fee5bcb1521`) **and `.xml`** (`f65398c6f8a1006a`; preferred for machine use) | current to 2026-06-14, last amended 2026-04-01 (PDF and XML identical) | all | 3 |
 | itr-consolidation | Income Tax Regulations, C.R.C., c. 945 — Justice Laws consolidation (PDF bilingual 1,361 pp + LIMS XML) | Justice Laws (Department of Justice Canada) | statute consolidation | Crown | yes (attribution + SI/97-5 "not an official version" notice) — **committed in-repo: `docs/sources/itr-consolidated-2026-06-14.pdf`** (`fd624ad485ede26b`) **and `itr-consolidated-2026-03-31.xml`** (`67841e2c5ed4fe1c`; preferred for machine use) | PDF current to 2026-06-14, XML snapshot current to 2026-03-31 — both last amended 2026-03-26, substantively identical | all; notably withholding (Reg 100–109), CCA (Reg 1100/Sch II), exempt-test policies (Reg 306/307), prescribed-rates (Reg 4301) | 3 |
+| cra-t1-2025 | CRA 2025 T1 Income Tax and Benefit Return package (English, Ontario) — 69 forms: federal `5000-*` (return, worksheet, guide, Schedules 2/3/5/6/7/8/9/11/12/13/15) plus Ontario `5006-*` | CRA (canada.ca) | form package | Crown (canada.ca terms of use — NOT SI/97-5) | **values only — PDFs held outside the repo pending a licensing decision (see registry note); 116 extracted constants committed at `docs/parameters/ty2025-cra-forms.json`** | TY2025 forms, package dated 2026-03-03; received 2026-07-29 | tax-brackets, non-refundable-credits, cwb, capital-gains, donations, disability, oas-recovery, dividend-gross-up, ei-premiums, top-up-credit, fhsa, caregiver | 1 |
+
 
 Registry notes:
+
+- **cra-t1-2025** — Crown copyright, but on the **canada.ca terms of use**, not
+  the SI/97-5 Reproduction of Federal Law Order that covers the ITA/ITR
+  consolidations. Those terms permit non-commercial reproduction freely; this
+  repository ships a commercial licence (`COMMERCIAL-LICENSE.md`), so
+  redistributing the PDFs from here is an **open question and Jason's call**.
+  Pending that decision the package sits in gitignored
+  `docs/reference-local/cra-t1-2025/` and only the extracted VALUES are
+  committed — a dollar figure or a rate is a fact, not an original work, and
+  carries no copyright even where the document does. Each value cites its form,
+  page and CRA field label, and each source PDF's sha256 is recorded, so the
+  extraction is auditable without the documents being redistributed.
+
+  Verified on intake 2026-07-29: all 69 PDFs are the **blank published forms**
+  (zero taxpayer-entered field values; page 1 reads "T1 2025"), so no client
+  data entered the repository. Tier 1 because the fillable variants carry the
+  year's indexed figures as read-only field values — this is CRA's own return,
+  the strongest available authority for indexed amounts, and it supersedes the
+  search-snippet evidence in `docs/research/m0/cra-parameter-pins.md` for every
+  figure it covers.
+
+  Scope limits: the `5000-*` forms are federal and identical across provincial
+  packages, so the federal corpus is fully served. The `5006-*` forms are
+  Ontario's and are Phase 7 material. The CWB amounts here are the **standard**
+  reconfiguration — AB, QC and NU differ under s. 122.7 and their packages are
+  not held, so `rules/cwb.ts` must refuse for those provinces rather than apply
+  these. CPP rates (YMPE/YAMPE), T4127 and the indexation adjustment page are
+  in no T1 package and remain outstanding.
 
 - **ppi-lit-2025** — engine relevance: LOW for v1 T1 (policy gains reach the
   T1 as other income, line 13000 — not in v1 scope) and none for M2 benefits;

@@ -1,0 +1,1216 @@
+{
+  "description": "Statutory constants read from the read-only fields of CRA's fillable T1 forms. Values only \u2014 the forms themselves are not reproduced. Each record cites its form, page and field.",
+  "extractedFrom": "docs/reference-local/cra-t1-2025/ontario",
+  "formsWithConstants": 14,
+  "constantCount": 116,
+  "skipped": [],
+  "forms": [
+    {
+      "form": "5000-D1-FILL",
+      "taxYear": "2025",
+      "title": "Federal Worksheet",
+      "sourceFile": "5000-d1-fill-25e.pdf",
+      "sourceSha256": "70bc4b41f3e6eea1cf559d6b2e4c0f09b46405c0bb43f2e93c14dc33f5b343f7",
+      "constants": [
+        {
+          "page": 1,
+          "field": "Page1.Line12000_12010.Group3.Line12.Percentage",
+          "label": "Lines 12000 and 12010. Taxable amount of dividends if you did not receive an information slip. Line 12. Applicable rate.",
+          "raw": "138%",
+          "kind": "rate",
+          "num": "69",
+          "den": "50",
+          "display": "138%"
+        },
+        {
+          "page": 1,
+          "field": "Page1.Line12000_12010.Group3.Line15.Percentage",
+          "label": "Lines 12000 and 12010. Taxable amount of dividends if you did not receive an information slip. Line 15. Applicable rate.",
+          "raw": "115%",
+          "kind": "rate",
+          "num": "23",
+          "den": "20",
+          "display": "115%"
+        },
+        {
+          "page": 2,
+          "field": "Page2.Line23500.Line16.Line16_Amount",
+          "label": "Line 23500. Line 16. Old age security benefits base amount.",
+          "raw": "93,454.00",
+          "kind": "money",
+          "cents": "9345400",
+          "display": "93,454.00"
+        },
+        {
+          "page": 3,
+          "field": "Page3.Line30000.Line1.Line1_Amount",
+          "label": "Line 30000. Line 1. Base amount.",
+          "raw": "14,538.00",
+          "kind": "money",
+          "cents": "1453800",
+          "display": "14,538.00"
+        },
+        {
+          "page": 3,
+          "field": "Page3.Line30000.Line2.Line2_Amount",
+          "label": "Line 30000. Line 2. Supplement amount.",
+          "raw": "1,591.00",
+          "kind": "money",
+          "cents": "159100",
+          "display": "1,591.00"
+        },
+        {
+          "page": 3,
+          "field": "Page3.Line30000.Line4.Line4_Amount",
+          "label": "Line 30000. Line 4. Income threshold.",
+          "raw": "177,882.00",
+          "kind": "money",
+          "cents": "17788200",
+          "display": "177,882.00"
+        },
+        {
+          "page": 3,
+          "field": "Page3.Line30000.Line6.Amount",
+          "label": "Line 30000. Line 6. Amount.",
+          "raw": "75,532.00",
+          "kind": "money",
+          "cents": "7553200",
+          "display": "75,532.00"
+        },
+        {
+          "page": 3,
+          "field": "Page3.Line30000.Line8.Line2_Amount",
+          "label": "Line 30000. Line 8. Amount.",
+          "raw": "1,591.00",
+          "kind": "money",
+          "cents": "159100",
+          "display": "1,591.00"
+        },
+        {
+          "page": 4,
+          "field": "Page4.Line30100.Line1.Amount",
+          "label": "Line 30100. Line 1. Maximum amount.",
+          "raw": "9,028.00",
+          "kind": "money",
+          "cents": "902800",
+          "display": "9,028.00"
+        },
+        {
+          "page": 4,
+          "field": "Page4.Line30100.Line3.Amount",
+          "label": "Line 30100. Line 3. Income threshold.",
+          "raw": "45,522.00",
+          "kind": "money",
+          "cents": "4552200",
+          "display": "45,522.00"
+        },
+        {
+          "page": 4,
+          "field": "Page4.Line30100.Line5.Amount",
+          "label": "Line 30100. Line 5. Applicable rate.",
+          "raw": "15%",
+          "kind": "rate",
+          "num": "3",
+          "den": "20",
+          "display": "15%"
+        },
+        {
+          "page": 5,
+          "field": "Page5.Line31600.Line1.FixedAmount",
+          "label": "Line 31600. Line 1. Base amount.",
+          "raw": "10,138.00",
+          "kind": "money",
+          "cents": "1013800",
+          "display": "10,138.00"
+        },
+        {
+          "page": 5,
+          "field": "Page5.Line31600.Line2.Amount",
+          "label": "Line 31600. Line 2. Maximum supplement.",
+          "raw": "5,914.00",
+          "kind": "money",
+          "cents": "591400",
+          "display": "5,914.00"
+        },
+        {
+          "page": 5,
+          "field": "Page5.Line31600.Line4.Amount",
+          "label": "Line 31600. Line 4. Threshold for child care and attendant care expenses.",
+          "raw": "3,464.00",
+          "kind": "money",
+          "cents": "346400",
+          "display": "3,464.00"
+        },
+        {
+          "page": 6,
+          "field": "Page6.Line31800.Line1.Line1_FixedAmount",
+          "label": "Line 31800. Line 1. Base amount.",
+          "raw": "10,138.00",
+          "kind": "money",
+          "cents": "1013800",
+          "display": "10,138.00"
+        },
+        {
+          "page": 6,
+          "field": "Page6.Line31800.Line2.Line2_FixedAmount",
+          "label": "Line 31800. Line 2. Maximum supplement.",
+          "raw": "5,914.00",
+          "kind": "money",
+          "cents": "591400",
+          "display": "5,914.00"
+        },
+        {
+          "page": 6,
+          "field": "Page6.Line31800.Line4.Line4_FixedAmount",
+          "label": "Line 31800. Line 4. Threshold for child care and attendant care expenses.",
+          "raw": "3,464.00",
+          "kind": "money",
+          "cents": "346400",
+          "display": "3,464.00"
+        },
+        {
+          "page": 7,
+          "field": "Page7.Line34990.Line4.Amount",
+          "label": "Line 34990. Line 4. Amount.",
+          "raw": "8,319.38",
+          "kind": "money",
+          "cents": "831938",
+          "display": "8,319.38"
+        },
+        {
+          "page": 7,
+          "field": "Page7.Line34990.Line6.Rate",
+          "label": "Line 34990. Line 6. Applicable rate.",
+          "raw": "3.45%",
+          "kind": "rate",
+          "num": "69",
+          "den": "2000",
+          "display": "3.45%"
+        },
+        {
+          "page": 8,
+          "field": "Page8.line41000.Chart.Column1.Line41000_Line2_grp1.Line41000__Line2_1",
+          "label": "Line 41000. Line 2. Line 40900 is $400 or less.",
+          "raw": "0.00",
+          "kind": "money",
+          "cents": "0",
+          "display": "0.00"
+        },
+        {
+          "page": 8,
+          "field": "Page8.line41000.Chart.Column1.Line41000_Line4_grp1.Line41000_Line4_1",
+          "label": "Line 41000. Line 4. Line 40900 is $400 or less.",
+          "raw": "75%",
+          "kind": "rate",
+          "num": "3",
+          "den": "4",
+          "display": "75%"
+        },
+        {
+          "page": 8,
+          "field": "Page8.line41000.Chart.Column1.Line41000_Line6_grp1.Line41000_Line6_1",
+          "label": "Line 41000. Line 6. Line 40900 is $400 or less.",
+          "raw": "0.00",
+          "kind": "money",
+          "cents": "0",
+          "display": "0.00"
+        },
+        {
+          "page": 8,
+          "field": "Page8.line41000.Chart.Column2.Line41000_Line2_grp2.Line41000__Line2_2",
+          "label": "Line 41000. Line 2. Line 40900 is more than $400 but not more than $750.",
+          "raw": "400.00",
+          "kind": "money",
+          "cents": "40000",
+          "display": "400.00"
+        },
+        {
+          "page": 8,
+          "field": "Page8.line41000.Chart.Column2.Line41000_Line4_grp2.Line41000_Line4_2",
+          "label": "Line 41000. Line 4. Line 40900 is more than $400 but not more than $750.",
+          "raw": "50%",
+          "kind": "rate",
+          "num": "1",
+          "den": "2",
+          "display": "50%"
+        },
+        {
+          "page": 8,
+          "field": "Page8.line41000.Chart.Column2.Line41000_Line6_grp2.Line41000_Line6_2",
+          "label": "Line 41000. Line 6. Line 40900 is more than $400 but not more than $750.",
+          "raw": "300.00",
+          "kind": "money",
+          "cents": "30000",
+          "display": "300.00"
+        },
+        {
+          "page": 8,
+          "field": "Page8.line41000.Chart.Column3.Line41000_Line2_grp3.Line41000__Line2_3",
+          "label": "Line 41000. Line 2. Line 40900 is more than $750.",
+          "raw": "750.00",
+          "kind": "money",
+          "cents": "75000",
+          "display": "750.00"
+        },
+        {
+          "page": 8,
+          "field": "Page8.line41000.Chart.Column3.Line41000_Line4_grp3.Line41000_Line4_3",
+          "label": "Line 41000. Line 4. Line 40900 is more than $750.",
+          "raw": "33.33%",
+          "kind": "rate",
+          "num": "3333",
+          "den": "10000",
+          "display": "33.33%"
+        },
+        {
+          "page": 8,
+          "field": "Page8.line41000.Chart.Column3.Line41000_Line6_grp3.Line41000_Line6_3",
+          "label": "Line 41000. Line 6. Line 40900 is more than $750.",
+          "raw": "475.00",
+          "kind": "money",
+          "cents": "47500",
+          "display": "475.00"
+        },
+        {
+          "page": 9,
+          "field": "Page9.Line45200.Line12.Amount",
+          "label": "Line 45200. Line 12. Applicable rate.",
+          "raw": "25%",
+          "kind": "rate",
+          "num": "1",
+          "den": "4",
+          "display": "25%"
+        },
+        {
+          "page": 9,
+          "field": "Page9.Line45200.Line15.Percentage",
+          "label": "Percentage",
+          "raw": "5%",
+          "kind": "rate",
+          "num": "1",
+          "den": "20",
+          "display": "5%"
+        },
+        {
+          "page": 9,
+          "field": "Page9.Line45200.Line7.Amount",
+          "label": "Line 45200. Line 7. Income threshold.",
+          "raw": "33,294.00",
+          "kind": "money",
+          "cents": "3329400",
+          "display": "33,294.00"
+        }
+      ]
+    },
+    {
+      "form": "5000-S12-FILL",
+      "taxYear": "2025",
+      "title": "Multigenerational Home Renovation Tax Credit",
+      "sourceFile": "5000-s12-fill-25e.pdf",
+      "sourceSha256": "db84f2d6cee57a6c6782982ba5d44af585070ff25a963815e4398fda9179e1a3",
+      "constants": [
+        {
+          "page": 3,
+          "field": "Page3.step1_sf.Line4_ID.Amount",
+          "label": "Line 4. Maximum amount per qualifying renovation.",
+          "raw": "50,000.00",
+          "kind": "money",
+          "cents": "5000000",
+          "display": "50,000.00"
+        },
+        {
+          "page": 3,
+          "field": "Page3.step2_sf.line9_sf.Percent_ReadOnly",
+          "label": "Line 9. Applicable rate.",
+          "raw": "14.5%",
+          "kind": "rate",
+          "num": "29",
+          "den": "200",
+          "display": "14.5%"
+        }
+      ]
+    },
+    {
+      "form": "5000-S13-FILL",
+      "taxYear": "2025",
+      "title": "Employment Insurance Premiums on",
+      "sourceFile": "5000-s13-fill-25e.pdf",
+      "sourceSha256": "f4a9478a64621269d233abbf43e400772fdf7d34217ca9dc1d34b1dc8bbc47e8",
+      "constants": [
+        {
+          "page": 2,
+          "field": "Page2.Line5.Amount",
+          "label": "Total employment insurance insurable earnings. Line 5. Maximum insurable earnings.",
+          "raw": "65,700.00",
+          "kind": "money",
+          "cents": "6570000",
+          "display": "65,700.00"
+        }
+      ]
+    },
+    {
+      "form": "5000-S15-FILL",
+      "taxYear": "2025",
+      "title": "FHSA Contributions, Transfers, and Activities",
+      "sourceFile": "5000-s15-fill-25e.pdf",
+      "sourceSha256": "e6e094d36ba7624558577c13ec62c6820e2d228788b538604e8947bd467cc24f",
+      "constants": [
+        {
+          "page": 2,
+          "field": "Page2.Step2.Line14.Amount",
+          "label": "Line 14.",
+          "raw": "8,000.00",
+          "kind": "money",
+          "cents": "800000",
+          "display": "8,000.00"
+        },
+        {
+          "page": 3,
+          "field": "Page3.Step2Cont.Line30.Amount",
+          "label": "Line 30.",
+          "raw": "8,000.00",
+          "kind": "money",
+          "cents": "800000",
+          "display": "8,000.00"
+        },
+        {
+          "page": 3,
+          "field": "Page3.Step3.Line46.Amount",
+          "label": "Line 46. Lifetime first home savings account limit.",
+          "raw": "40,000.00",
+          "kind": "money",
+          "cents": "4000000",
+          "display": "40,000.00"
+        }
+      ]
+    },
+    {
+      "form": "5000-S3-FILL",
+      "taxYear": "2025",
+      "title": "Capital Gains or Losses",
+      "sourceFile": "5000-s3-fill-25e.pdf",
+      "sourceSha256": "23f3a645303fdc8b070dfbbd9559f0992e37d73d02a7df6fbdc589b832082565",
+      "constants": [
+        {
+          "page": 4,
+          "field": "Page4.Part5.Line23.Amount",
+          "label": "Line 23. Inclusion rate.",
+          "raw": "50%",
+          "kind": "rate",
+          "num": "1",
+          "den": "2",
+          "display": "50%"
+        }
+      ]
+    },
+    {
+      "form": "5000-S5-FILL",
+      "taxYear": "2025",
+      "title": "Amounts for Spouse or Common-Law Partner and Dependants",
+      "sourceFile": "5000-s5-fill-25e.pdf",
+      "sourceSha256": "b44bd192f2b7938a918dac3ee16722476b63fa288b6a0bf02cbce86cfd9f354c",
+      "constants": [
+        {
+          "page": 4,
+          "field": "Page4.Line30425.Line30425_Chart.Line1.Line30425_L1_inpt",
+          "label": "Line 30425. Canada caregiver amount for spouse or common-law partner, or eligible dependant age 18 or older. Line 1. Base amount.",
+          "raw": "28,798.00",
+          "kind": "money",
+          "cents": "2879800",
+          "display": "28,798.00"
+        },
+        {
+          "page": 5,
+          "field": "Page5.Line30450.Line30450_Chart.Line1.Line30450_L1_inpt",
+          "label": "Line 30450. Canada caregiver amount for other infirm dependants age 18 or older. Line 1. Base amount.",
+          "raw": "28,798.00",
+          "kind": "money",
+          "cents": "2879800",
+          "display": "28,798.00"
+        }
+      ]
+    },
+    {
+      "form": "5000-S6-FILL",
+      "taxYear": "2025",
+      "title": "Canada Workers Benefit",
+      "sourceFile": "5000-s6-fill-25e.pdf",
+      "sourceSha256": "a31ecaf0c664485b616c6726ba14b0194891ae81e6297abfd28adcee3da78574",
+      "constants": [
+        {
+          "page": 4,
+          "field": "Page4.Step2.Line17.Amount",
+          "label": "Line 17. Base amount.",
+          "raw": "3,000.00",
+          "kind": "money",
+          "cents": "300000",
+          "display": "3,000.00"
+        },
+        {
+          "page": 4,
+          "field": "Page4.Step2.Line19.Percent",
+          "label": "Line 19. Rate.",
+          "raw": "27%",
+          "kind": "rate",
+          "num": "27",
+          "den": "100",
+          "display": "27%"
+        },
+        {
+          "page": 4,
+          "field": "Page4.Step2.Line26.Percent",
+          "label": "Line 26. Rate.",
+          "raw": "15%",
+          "kind": "rate",
+          "num": "3",
+          "den": "20",
+          "display": "15%"
+        },
+        {
+          "page": 4,
+          "field": "Page4.Step3.Line30.Amount",
+          "label": "Line 30. Base amount.",
+          "raw": "1,150.00",
+          "kind": "money",
+          "cents": "115000",
+          "display": "1,150.00"
+        },
+        {
+          "page": 4,
+          "field": "Page4.Step3.Line32.Percent",
+          "label": "Line 32. Rate.",
+          "raw": "27%",
+          "kind": "rate",
+          "num": "27",
+          "den": "100",
+          "display": "27%"
+        }
+      ]
+    },
+    {
+      "form": "5000-S9-FILL",
+      "taxYear": "2025",
+      "title": "Donations and Gifts",
+      "sourceFile": "5000-s9-fill-25e.pdf",
+      "sourceSha256": "aac16785c69833801b8b4c4d0203b6cfc49f48cd7638dc6e61b69a294ddc5542",
+      "constants": [
+        {
+          "page": 1,
+          "field": "Page1.Line18.Amount",
+          "label": "Line 18. Income threshold.",
+          "raw": "253,414.00",
+          "kind": "money",
+          "cents": "25341400",
+          "display": "253,414.00"
+        }
+      ]
+    },
+    {
+      "form": "5006-A-FILL",
+      "taxYear": "2025",
+      "title": "Schedule ON428\u2013A",
+      "sourceFile": "5006-a-fill-25e.pdf",
+      "sourceSha256": "5364f60648f8a8c4d77a10655bc46731579060d775c2151268b894a012409e19",
+      "constants": [
+        {
+          "page": 1,
+          "field": "Page1.Adjusted_net_income.Line4.Percent_ReadOnly",
+          "label": "Line 4. Applicable rate.",
+          "raw": "5.05%",
+          "kind": "rate",
+          "num": "101",
+          "den": "2000",
+          "display": "5.05%"
+        },
+        {
+          "page": 1,
+          "field": "Page1.PartA.Line16.Amount_ReadOnly",
+          "label": "Line 16. Individual income threshold.",
+          "raw": "32,500.00",
+          "kind": "money",
+          "cents": "3250000",
+          "display": "32,500.00"
+        },
+        {
+          "page": 1,
+          "field": "Page1.PartA.Line18.Percent_ReadOnly",
+          "label": "Line 18. Applicable rate.",
+          "raw": "5%",
+          "kind": "rate",
+          "num": "1",
+          "den": "20",
+          "display": "5%"
+        },
+        {
+          "page": 2,
+          "field": "Page2.PartB.Line31.Amount_ReadOnly",
+          "label": "Line 31. Individual income threshold.",
+          "raw": "32,500.00",
+          "kind": "money",
+          "cents": "3250000",
+          "display": "32,500.00"
+        },
+        {
+          "page": 2,
+          "field": "Page2.PartB.Line36.Amount_ReadOnly",
+          "label": "Line 36. Family income threshold.",
+          "raw": "65,000.00",
+          "kind": "money",
+          "cents": "6500000",
+          "display": "65,000.00"
+        },
+        {
+          "page": 2,
+          "field": "Page2.PartB.Line39.Percent_ReadOnly",
+          "label": "Line 39. Applicable rate.",
+          "raw": "5%",
+          "kind": "rate",
+          "num": "1",
+          "den": "20",
+          "display": "5%"
+        }
+      ]
+    },
+    {
+      "form": "5006-C-FILL",
+      "taxYear": "2025",
+      "title": "Form ON428",
+      "sourceFile": "5006-c-fill-25e.pdf",
+      "sourceSha256": "13902084cf55966ca3cccb103190e49991d1f44d50991e29613f82b06dbd551e",
+      "constants": [
+        {
+          "page": 1,
+          "field": "Page1.Chart.Column1.Line3.Amount",
+          "label": "Line 3. Line 1 is $52,886 or less.",
+          "raw": "0.00",
+          "kind": "money",
+          "cents": "0",
+          "display": "0.00"
+        },
+        {
+          "page": 1,
+          "field": "Page1.Chart.Column1.Line5.Percent",
+          "label": "Line 5. Line 1 is $52,886 or less.",
+          "raw": "5.05%",
+          "kind": "rate",
+          "num": "101",
+          "den": "2000",
+          "display": "5.05%"
+        },
+        {
+          "page": 1,
+          "field": "Page1.Chart.Column1.Line7.Amount",
+          "label": "Line 7. Line 1 is $52,886 or less.",
+          "raw": "0.00",
+          "kind": "money",
+          "cents": "0",
+          "display": "0.00"
+        },
+        {
+          "page": 1,
+          "field": "Page1.Chart.Column2.Line3.Amount",
+          "label": "Line 3. Line 1 is more than $52,886 but not more than $105,775.",
+          "raw": "52,886.00",
+          "kind": "money",
+          "cents": "5288600",
+          "display": "52,886.00"
+        },
+        {
+          "page": 1,
+          "field": "Page1.Chart.Column2.Line5.Percent",
+          "label": "Line 5. Line 1 is more than $52,886 but not more than $105,775.",
+          "raw": "9.15%",
+          "kind": "rate",
+          "num": "183",
+          "den": "2000",
+          "display": "9.15%"
+        },
+        {
+          "page": 1,
+          "field": "Page1.Chart.Column2.Line7.Amount",
+          "label": "Line 7. Line 1 is more than $52,886 but not more than $105,775.",
+          "raw": "2,670.74",
+          "kind": "money",
+          "cents": "267074",
+          "display": "2,670.74"
+        },
+        {
+          "page": 1,
+          "field": "Page1.Chart.Column3.Line3.Amount",
+          "label": "Line 3. Line 1 is more than $105,775 but not more than $150,000.",
+          "raw": "105,775.00",
+          "kind": "money",
+          "cents": "10577500",
+          "display": "105,775.00"
+        },
+        {
+          "page": 1,
+          "field": "Page1.Chart.Column3.Line5.Percent",
+          "label": "Line 5. Line 1 is more than $105,775 but not more than $150,000.",
+          "raw": "11.16%",
+          "kind": "rate",
+          "num": "279",
+          "den": "2500",
+          "display": "11.16%"
+        },
+        {
+          "page": 1,
+          "field": "Page1.Chart.Column3.Line7.Amount",
+          "label": "Line 7. Line 1 is more than $105,775 but not more than $150,000.",
+          "raw": "7,510.09",
+          "kind": "money",
+          "cents": "751009",
+          "display": "7,510.09"
+        },
+        {
+          "page": 1,
+          "field": "Page1.Chart.Column4.Line3.Amount",
+          "label": "Line 3. Line 1 is more than $150,000 but not more than $220,000.",
+          "raw": "150,000.00",
+          "kind": "money",
+          "cents": "15000000",
+          "display": "150,000.00"
+        },
+        {
+          "page": 1,
+          "field": "Page1.Chart.Column4.Line5.Percent",
+          "label": "Line 5. Line 1 is more than $150,000 but not more than $220,000.",
+          "raw": "12.16%",
+          "kind": "rate",
+          "num": "76",
+          "den": "625",
+          "display": "12.16%"
+        },
+        {
+          "page": 1,
+          "field": "Page1.Chart.Column4.Line7.Amount",
+          "label": "Line 7. Line 1 is more than $150,000 but not more than $220,000.",
+          "raw": "12,445.60",
+          "kind": "money",
+          "cents": "1244560",
+          "display": "12,445.60"
+        },
+        {
+          "page": 1,
+          "field": "Page1.Chart.Column5.Line3.Amount",
+          "label": "Line 3. Line 1 is more than $220,000.",
+          "raw": "220,000.00",
+          "kind": "money",
+          "cents": "22000000",
+          "display": "220,000.00"
+        },
+        {
+          "page": 1,
+          "field": "Page1.Chart.Column5.Line5.Percent",
+          "label": "Line 5. Line 1 is more than $220,000.",
+          "raw": "13.16%",
+          "kind": "rate",
+          "num": "329",
+          "den": "2500",
+          "display": "13.16%"
+        },
+        {
+          "page": 1,
+          "field": "Page1.Chart.Column5.Line7.Amount",
+          "label": "Line 7. Line 1 is more than $220,000.",
+          "raw": "20,957.60",
+          "kind": "money",
+          "cents": "2095760",
+          "display": "20,957.60"
+        },
+        {
+          "page": 1,
+          "field": "Page1.Part_B.Eligible-Dependant.Line14.Amount",
+          "label": "Line 14. Amount for an eligible dependant. Base amount.",
+          "raw": "11,905.00",
+          "kind": "money",
+          "cents": "1190500",
+          "display": "11,905.00"
+        },
+        {
+          "page": 1,
+          "field": "Page1.Part_B.Spouse-Amount.Line11.Amount",
+          "label": "Line 11. Spouse or common-law partner amount. Base amount.",
+          "raw": "11,905.00",
+          "kind": "money",
+          "cents": "1190500",
+          "display": "11,905.00"
+        },
+        {
+          "page": 2,
+          "field": "Page2.Line45.Percent_ReadOnly",
+          "label": "Line 45. Ontario non-refundable tax credit rate.",
+          "raw": "5.05%",
+          "kind": "rate",
+          "num": "101",
+          "den": "2000",
+          "display": "5.05%"
+        },
+        {
+          "page": 2,
+          "field": "Page2.Medical-Expenses.Line38.Percent_ReadOnly",
+          "label": "Line 38. Medical expenses. Applicable rate.",
+          "raw": "3%",
+          "kind": "rate",
+          "num": "3",
+          "den": "100",
+          "display": "3%"
+        },
+        {
+          "page": 3,
+          "field": "Page3.Line74.Amount",
+          "label": "Line 74. Basic reduction.",
+          "raw": "294.00",
+          "kind": "money",
+          "cents": "29400",
+          "display": "294.00"
+        }
+      ]
+    },
+    {
+      "form": "5006-D-FILL",
+      "taxYear": "2025",
+      "title": "Worksheet ON428",
+      "sourceFile": "5006-d-fill-25e.pdf",
+      "sourceSha256": "607c791195d4351f5278be6b3128f4aa1d845cca094e93773a0701de7a70a213",
+      "constants": [
+        {
+          "page": 1,
+          "field": "Page1.Line58080.Line1.Amount",
+          "label": "Line 58080. Line 1. Maximum amount.",
+          "raw": "6,223.00",
+          "kind": "money",
+          "cents": "622300",
+          "display": "6,223.00"
+        },
+        {
+          "page": 1,
+          "field": "Page1.Line58080.Line3.Amount",
+          "label": "Line 58080. Line 3. Income threshold.",
+          "raw": "46,330.00",
+          "kind": "money",
+          "cents": "4633000",
+          "display": "46,330.00"
+        },
+        {
+          "page": 1,
+          "field": "Page1.Line58080.Line5.Percent",
+          "label": "Line 58080. Line 5. Applicable rate.",
+          "raw": "15%",
+          "kind": "rate",
+          "num": "3",
+          "den": "20",
+          "display": "15%"
+        },
+        {
+          "page": 1,
+          "field": "Page1.Line58185.Dependant1.Line1-C1.Amount",
+          "label": "Line 58185. Line 1. Dependant 1. Base amount.",
+          "raw": "26,562.00",
+          "kind": "money",
+          "cents": "2656200",
+          "display": "26,562.00"
+        },
+        {
+          "page": 1,
+          "field": "Page1.Line58185.Dependant2.Line1-C2.Amount",
+          "label": "Line 58185. Line 1. Dependant 2. Base amount.",
+          "raw": "26,562.00",
+          "kind": "money",
+          "cents": "2656200",
+          "display": "26,562.00"
+        },
+        {
+          "page": 1,
+          "field": "Page1.Line58185.Dependant3.Line1-C3.Amount",
+          "label": "Line 58185. Line 1. Dependant 3. Base amount.",
+          "raw": "26,562.00",
+          "kind": "money",
+          "cents": "2656200",
+          "display": "26,562.00"
+        },
+        {
+          "page": 1,
+          "field": "Page1.Line58440.Line1.Amount",
+          "label": "Line 58440. Line 1. Base amount.",
+          "raw": "10,298.00",
+          "kind": "money",
+          "cents": "1029800",
+          "display": "10,298.00"
+        },
+        {
+          "page": 1,
+          "field": "Page1.Line58440.Line2.Amount",
+          "label": "Line 58440. Line 2. Maximum amount.",
+          "raw": "6,007.00",
+          "kind": "money",
+          "cents": "600700",
+          "display": "6,007.00"
+        },
+        {
+          "page": 1,
+          "field": "Page1.Line58440.Line4.Amount_ReadOnly",
+          "label": "Line 58440. Line 4. Threshold for child and attendant care expenses.",
+          "raw": "3,518.00",
+          "kind": "money",
+          "cents": "351800",
+          "display": "3,518.00"
+        },
+        {
+          "page": 2,
+          "field": "Page2.Line58480.Line1.Amount",
+          "label": "Line 58480. Line 1. Base amount.",
+          "raw": "10,298.00",
+          "kind": "money",
+          "cents": "1029800",
+          "display": "10,298.00"
+        },
+        {
+          "page": 2,
+          "field": "Page2.Line58480.Line2.Amount",
+          "label": "Line 58480. Line 2. Maximum amount.",
+          "raw": "6,007.00",
+          "kind": "money",
+          "cents": "600700",
+          "display": "6,007.00"
+        },
+        {
+          "page": 2,
+          "field": "Page2.Line58480.Line4.Amount",
+          "label": "Line 58480. Line 4. Threshold for child and attendant care expenses.",
+          "raw": "3,518.00",
+          "kind": "money",
+          "cents": "351800",
+          "display": "3,518.00"
+        }
+      ]
+    },
+    {
+      "form": "5006-D1-FILL",
+      "taxYear": "2025",
+      "title": "Worksheet ON479",
+      "sourceFile": "5006-d1-fill-25e.pdf",
+      "sourceSha256": "1afaab06f8aae6c00bd454973c77e0e9fac96671e07d2cb0a258c483cf21025d",
+      "constants": [
+        {
+          "page": 1,
+          "field": "Page1.Line16.Chart.Column1.Line2-C1.Amount",
+          "label": "Line 16. Line 2. Line 63110 is $500.05 or less.",
+          "raw": "0.00",
+          "kind": "money",
+          "cents": "0",
+          "display": "0.00"
+        },
+        {
+          "page": 1,
+          "field": "Page1.Line16.Chart.Column1.Line4-C1.Percent",
+          "label": "Line 16. Line 4. Line 63110 is $500.05 or less.",
+          "raw": "75%",
+          "kind": "rate",
+          "num": "3",
+          "den": "4",
+          "display": "75%"
+        },
+        {
+          "page": 1,
+          "field": "Page1.Line16.Chart.Column1.Line6-C1.Amount",
+          "label": "Line 16. Line 6. Line 63110 is $500.05 or less.",
+          "raw": "0.00",
+          "kind": "money",
+          "cents": "0",
+          "display": "0.00"
+        },
+        {
+          "page": 1,
+          "field": "Page1.Line16.Chart.Column2.Line2-C2.Amount",
+          "label": "Line 16. Line 2. Line 63110 is more than $500.05 but not more than $1,666.82.",
+          "raw": "500.05",
+          "kind": "money",
+          "cents": "50005",
+          "display": "500.05"
+        },
+        {
+          "page": 1,
+          "field": "Page1.Line16.Chart.Column2.Line4-C2.Percent",
+          "label": "Line 16. Line 4. Line 63110 is more than $500.05 but not more than $1,666.82.",
+          "raw": "50%",
+          "kind": "rate",
+          "num": "1",
+          "den": "2",
+          "display": "50%"
+        },
+        {
+          "page": 1,
+          "field": "Page1.Line16.Chart.Column2.Line6-C2.Amount",
+          "label": "Line 16. Line 6. Line 63110 is more than $500.05 but not more than $1,666.82.",
+          "raw": "375.03",
+          "kind": "money",
+          "cents": "37503",
+          "display": "375.03"
+        },
+        {
+          "page": 1,
+          "field": "Page1.Line16.Chart.Column3.Line2-C3.Amount",
+          "label": "Line 16. Line 2. Line 63110 is more than $1,666.82.",
+          "raw": "1,666.82",
+          "kind": "money",
+          "cents": "166682",
+          "display": "1,666.82"
+        },
+        {
+          "page": 1,
+          "field": "Page1.Line16.Chart.Column3.Line4-C3.Percent",
+          "label": "Line 16. Line 4. Line 63110 is more than $1,666.82.",
+          "raw": "33.33%",
+          "kind": "rate",
+          "num": "3333",
+          "den": "10000",
+          "display": "33.33%"
+        },
+        {
+          "page": 1,
+          "field": "Page1.Line16.Chart.Column3.Line6-C3.Amount",
+          "label": "Line 16. Line 6. Line 63110 is more than $1,666.82.",
+          "raw": "958.41",
+          "kind": "money",
+          "cents": "95841",
+          "display": "958.41"
+        },
+        {
+          "page": 1,
+          "field": "Page1.Line20.Line2.Percent_ReadOnly",
+          "label": "Line 20. Line 2.",
+          "raw": "5%",
+          "kind": "rate",
+          "num": "1",
+          "den": "20",
+          "display": "5%"
+        },
+        {
+          "page": 1,
+          "field": "Page1.Line20.Line5.Amount_ReadOnly",
+          "label": "Line 20. Line 5.",
+          "raw": "400,000.00",
+          "kind": "money",
+          "cents": "40000000",
+          "display": "400,000.00"
+        },
+        {
+          "page": 1,
+          "field": "Page1.Line20.Line7.Amount_ReadOnly",
+          "label": "Line 20. Line 7.",
+          "raw": "200,000.00",
+          "kind": "money",
+          "cents": "20000000",
+          "display": "200,000.00"
+        },
+        {
+          "page": 1,
+          "field": "Page1.Line20.Line9.Amount_ReadOnly",
+          "label": "Line 20. Line 9.",
+          "raw": "1.00",
+          "kind": "money",
+          "cents": "100",
+          "display": "1.00"
+        }
+      ]
+    },
+    {
+      "form": "5006-R-FILL",
+      "taxYear": "2025",
+      "title": "Income Tax and Benefit Return",
+      "sourceFile": "5006-r-fill-25e.pdf",
+      "sourceSha256": "d307c87b2e53d98653d45065ca1b5d7b0ded5b6220e59fe6fef67c6c06717539",
+      "constants": [
+        {
+          "page": 5,
+          "field": "Page5.PartA.Column1.Line37Amount1",
+          "label": "Line 71. Line 26000 is $57,375 or less.",
+          "raw": "0.00",
+          "kind": "money",
+          "cents": "0",
+          "display": "0.00"
+        },
+        {
+          "page": 5,
+          "field": "Page5.PartA.Column1.Line39Rate2",
+          "label": "Line 73. Line 26000 is $57,375 or less.",
+          "raw": "14.5%",
+          "kind": "rate",
+          "num": "29",
+          "den": "200",
+          "display": "14.5%"
+        },
+        {
+          "page": 5,
+          "field": "Page5.PartA.Column1.Line41Amount1",
+          "label": "Line 75. Line 26000 is $57,375 or less.",
+          "raw": "0.00",
+          "kind": "money",
+          "cents": "0",
+          "display": "0.00"
+        },
+        {
+          "page": 5,
+          "field": "Page5.PartA.Column2.Line37Amount2",
+          "label": "Line 71. Line 26000 is more than $57,375 but not more than $114,750.",
+          "raw": "57,375.00",
+          "kind": "money",
+          "cents": "5737500",
+          "display": "57,375.00"
+        },
+        {
+          "page": 5,
+          "field": "Page5.PartA.Column2.Line39Rate2",
+          "label": "Line 73. Line 26000 is more than $57,375 but not more than $114,750.",
+          "raw": "20.5%",
+          "kind": "rate",
+          "num": "41",
+          "den": "200",
+          "display": "20.5%"
+        },
+        {
+          "page": 5,
+          "field": "Page5.PartA.Column2.Line41Amount2",
+          "label": "Line 75. Line 26000 is more than $57,375 but not more than $114,750.",
+          "raw": "8,319.38",
+          "kind": "money",
+          "cents": "831938",
+          "display": "8,319.38"
+        },
+        {
+          "page": 5,
+          "field": "Page5.PartA.Column3.Line37Amount3",
+          "label": "Line 71. Line 26000 is more than $114,750 but not more than $177,882.",
+          "raw": "114,750.00",
+          "kind": "money",
+          "cents": "11475000",
+          "display": "114,750.00"
+        },
+        {
+          "page": 5,
+          "field": "Page5.PartA.Column3.Line39Rate3",
+          "label": "Line 73. Line 26000 is more than $114,750 but not more than $177,882.",
+          "raw": "26%",
+          "kind": "rate",
+          "num": "13",
+          "den": "50",
+          "display": "26%"
+        },
+        {
+          "page": 5,
+          "field": "Page5.PartA.Column3.Line41Amount3",
+          "label": "Line 75. Line 26000 is more than $114,750 but not more than $177,882.",
+          "raw": "20,081.25",
+          "kind": "money",
+          "cents": "2008125",
+          "display": "20,081.25"
+        },
+        {
+          "page": 5,
+          "field": "Page5.PartA.Column4.Line37Amount4",
+          "label": "Line 71. Line 26000 is more than $177,882 but not more than $253,414.",
+          "raw": "177,882.00",
+          "kind": "money",
+          "cents": "17788200",
+          "display": "177,882.00"
+        },
+        {
+          "page": 5,
+          "field": "Page5.PartA.Column4.Line39Rate4",
+          "label": "Line 73. Line 26000 is more than $177,882 but not more than $253,414.",
+          "raw": "29%",
+          "kind": "rate",
+          "num": "29",
+          "den": "100",
+          "display": "29%"
+        },
+        {
+          "page": 5,
+          "field": "Page5.PartA.Column4.Line41Amount4",
+          "label": "Line 75. Line 26000 is more than $177,882 but not more than $253,414.",
+          "raw": "36,495.57",
+          "kind": "money",
+          "cents": "3649557",
+          "display": "36,495.57"
+        },
+        {
+          "page": 5,
+          "field": "Page5.PartA.Column5.Line37Amount5",
+          "label": "Line 71. Line 26000 is more than $253,414.",
+          "raw": "253,414.00",
+          "kind": "money",
+          "cents": "25341400",
+          "display": "253,414.00"
+        },
+        {
+          "page": 5,
+          "field": "Page5.PartA.Column5.Line39Rate5",
+          "label": "Line 73. Line 26000 is more than $253,414.",
+          "raw": "33%",
+          "kind": "rate",
+          "num": "33",
+          "den": "100",
+          "display": "33%"
+        },
+        {
+          "page": 5,
+          "field": "Page5.PartA.Column5.Line41Amount5",
+          "label": "Line 75. Line 26000 is more than $253,414.",
+          "raw": "58,399.85",
+          "kind": "money",
+          "cents": "5839985",
+          "display": "58,399.85"
+        },
+        {
+          "page": 6,
+          "field": "Page6.PartB.Line120.Rate",
+          "label": "Line 114. Federal non-refundable tax credit rate.",
+          "raw": "14.5%",
+          "kind": "rate",
+          "num": "29",
+          "den": "200",
+          "display": "14.5%"
+        }
+      ]
+    },
+    {
+      "form": "5006-TC-FILL",
+      "taxYear": "2025",
+      "title": "Form ON479",
+      "sourceFile": "5006-tc-fill-25e.pdf",
+      "sourceSha256": "220b280ec7accba4e3de9166cfd922624f8892a8e30a3253369f708b3d3aab13",
+      "constants": [
+        {
+          "page": 1,
+          "field": "Page1.Line11.Percent_ReadOnly",
+          "label": "Line 11. Applicable rate.",
+          "raw": "5%",
+          "kind": "rate",
+          "num": "1",
+          "den": "20",
+          "display": "5%"
+        },
+        {
+          "page": 1,
+          "field": "Page1.Line4.Percent_ReadOnly",
+          "label": "Line 4. Allowable percentage.",
+          "raw": "25%",
+          "kind": "rate",
+          "num": "1",
+          "den": "4",
+          "display": "25%"
+        },
+        {
+          "page": 1,
+          "field": "Page1.Line9.Amount",
+          "label": "Line 9. Base amount.",
+          "raw": "35,000.00",
+          "kind": "money",
+          "cents": "3500000",
+          "display": "35,000.00"
+        }
+      ]
+    }
+  ]
+}

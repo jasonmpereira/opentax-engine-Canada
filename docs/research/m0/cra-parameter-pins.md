@@ -149,3 +149,49 @@ Note also that `add_repo` cannot attach the mirror to this session — it
 refuses cross-owner adds (`cross-tier adds are not supported in v1`, session
 already holds `jasonmpereira` repos). Plain `git`/`curl` against the mirror
 works and needs no session change; that is the supported path.
+
+---
+
+## 2026-07-29 — SUPERSEDED for most figures: CRA 2025 T1 package received
+
+Jason delivered the **CRA 2025 T1 package (English, Ontario)** — 69 blank
+published forms, verified free of taxpayer data on intake. This closes the
+parameter-authority bucket for most of what this document held on search
+snippets, **without canada.ca ever becoming reachable**.
+
+The key discovery: CRA's **fillable** form variants carry the year's indexed
+figures as read-only AcroForm field values, each with a descriptive tooltip.
+That is CRA's own return as a machine-readable parameter source. 116 constants
+extracted to [`../../parameters/ty2025-cra-forms.json`](../../parameters/ty2025-cra-forms.json)
+via `tools/cra-forms/extract_params.py`; provenance and caveats in
+[`../../parameters/README.md`](../../parameters/README.md).
+
+**Now on primary authority** (was `[official-snippet]`):
+
+| Figure | This document held | CRA form confirms |
+|---|---|---|
+| bracket thresholds | 57,375 / 114,750 / 177,882 / 253,414 | identical — 5006-R Step 5 Part A |
+| BPA range | 16,129 max → 14,538 min | 14,538 base + 1,591 supplement = 16,129 — 5000-D1 line 30000 |
+| TY2025 lowest rate | 14.5% blended (pinned separately) | **14.5%** — 5006-R, and the printed cumulative $8,319.38 = 57,375 × 14.5% proves it arithmetically |
+| EI maximum insurable earnings | 65,700 | identical — 5000-S13 line 5 |
+
+Every held value was confirmed; none was contradicted.
+
+**Newly pinned, not previously held:** OAS recovery base 93,454; age amount
+9,028 / 45,522 / 15%; disability 10,138 / 5,914 / 3,464; dividend gross-up
+138% / 115%; capital gains inclusion 50%; Canada caregiver 28,798; CWB 3,000 /
+27% / 15% and disability supplement 1,150 / 27%; donations top tranche 253,414;
+medical supplement 33,294 / 25% / 5%; and the **top-up tax credit (line 34990,
+NEW for 2025) at 8,319.38 and 3.45%** — which bears directly on the open M0
+gate "Top-up citation pinned" (owner: Phoenix).
+
+**Still blocked, still needing a canada.ca-capable network or a handover:**
+
+- The full **NETFILE certified-software table** — unchanged; it is a web page,
+  not a form, and nothing in the package covers it. The FLAG at the top of this
+  document stands.
+- **Indexation factor 2.7%** — still snippet-only. Not required for the figures
+  above (the forms give post-indexation amounts directly), but needed to verify
+  s. 117.1 indexation rather than take the results as given.
+- **CPP** rates, YMPE and YAMPE, and **T4127** — in no T1 package.
+- **AB / NU / QC** packages — the CWB reconfigurations and the Quebec abatement.
