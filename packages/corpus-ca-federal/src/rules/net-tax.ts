@@ -16,7 +16,6 @@
  * Several line-42000 components are still unmodelled, and each has its own
  * refusing rule so the gap is visible rather than silently absorbed:
  *   CPP on self-employment (Sch. 8)   cpp-self-employed.ts — YMPE/YAMPE unheld
- *   OAS recovery tax (s. 180.2)       not yet written
  *   alternative minimum tax (s. 127.5) not yet written (decision D2: in scope)
  *   Quebec abatement (s. 120(2))      not yet written (decision D6)
  *   Canada Workers Benefit (s. 122.7) refundable, not part of this line
@@ -54,19 +53,28 @@ export const netTaxRules: Rule[] = [
     output: { type: "money" },
     // Non-refundable: floors at nil, never negative.
     formula: {
-      kind: "max0",
-      arg: {
-        kind: "sub",
-        left: rule("ca.federal.tax_before_credits"),
-        right: {
-          kind: "add",
-          args: [
-            rule("ca.federal.non_refundable_credits"),
-            rule("ca.federal.dividend_tax_credit"),
-            rule("ca.federal.donations_credit"),
-          ],
+      kind: "add",
+      args: [
+        {
+          kind: "max0",
+          arg: {
+            kind: "sub",
+            left: rule("ca.federal.tax_before_credits"),
+            right: {
+              kind: "add",
+              args: [
+                rule("ca.federal.non_refundable_credits"),
+                rule("ca.federal.dividend_tax_credit"),
+                rule("ca.federal.donations_credit"),
+              ],
+            },
+          },
         },
-      },
+        // The OAS recovery tax is levied under Part I.2 and ADDED at line
+        // 42200; the non-refundable floor above does not absorb it, which is
+        // why it sits outside the max0 rather than inside the subtraction.
+        rule("ca.federal.oas_recovery_tax"),
+      ],
     },
   },
   {
@@ -93,8 +101,6 @@ export const netTaxRules: Rule[] = [
       cond: {
         kind: "or",
         args: [
-          // OAS recovery tax (s. 180.2)
-          { kind: "cmp", op: "gt", left: fact("oasBenefits"), right: money("0") },
           // CPP on self-employment (Schedule 8)
           { kind: "cmp", op: "gt", left: fact("selfEmploymentIncome"), right: money("0") },
           // Quebec abatement (s. 120(2))
@@ -104,7 +110,7 @@ export const netTaxRules: Rule[] = [
       then: {
         kind: "unsupported",
         reason:
-          "This return involves a line-42000 component the corpus does not yet model: OAS benefits (s. 180.2 recovery tax), self-employment income (Schedule 8 CPP), or Quebec residence (s. 120(2) abatement). Unlike the other gaps in this corpus these are ADDITIVE, so net_tax would be understated rather than refused. Do not rely on ca.federal.net_tax for this return.",
+          "This return involves a line-42000 component the corpus does not yet model: self-employment income (Schedule 8 CPP) or Quebec residence (s. 120(2) abatement). Unlike the other gaps in this corpus these are ADDITIVE, so net_tax would be understated rather than refused. Do not rely on ca.federal.net_tax for this return.",
       },
       else: money("0"),
     },

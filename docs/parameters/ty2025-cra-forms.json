@@ -1212,5 +1212,22 @@
         }
       ]
     }
-  ]
+  ],
+  "proseStatedConstants": {
+    "note": "Two TY2025 indexed amounts are stated in CRA PROSE rather than in a form field, so extract_params.py cannot reach them. Recorded here because rules depend on them.",
+    "values": [
+      {
+        "amount": "1471.00",
+        "cents": "147100",
+        "what": "Canada employment amount (s. 118(10)), line 31260",
+        "source": "CRA guide 5000-G (2025), page 37: 'you can claim $1,471 (the maximum amount) on line 31260 of your return'"
+      },
+      {
+        "amount": "2834.00",
+        "cents": "283400",
+        "what": "Medical expense floor cap (s. 118.2(1) 'C'), line 33200",
+        "source": "CRA return 5006-R (2025), page 6, lines 108-109: 'Amount from line 23600 x 3%' / 'Enter whichever is less: $2,834 or the amount from line 108'"
+      }
+    ]
+  }
 }

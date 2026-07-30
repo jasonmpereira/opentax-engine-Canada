@@ -136,12 +136,13 @@ describe("the boundaries of what is modelled", () => {
     ).toThrow(NoApplicableRuleError);
   });
 
-  it("net tax refuses for an employed filer — the s. 118(10) figure is unpinned", () => {
-    // Not NoApplicableRule: the rule exists and was reached. The Canada
-    // employment amount sits in the credit chain and its indexed figure is
-    // not held, so the corpus declines rather than approximating it.
+  it("net tax computes for an employed filer", () => {
+    // 14.5% x 57,375 + 20.5% x 27,625 = 13,982.50 before credits.
+    // amounts: BPA 16,129 + Canada employment 1,471 = 17,600
+    // credit : 14.5% x 17,600 = 2,552.00
+    // net    : 13,982.50 - 2,552.00 = 11,430.50
     const facts = { ...WHO, employmentIncome: 85000 };
-    expect(() => cents(facts, "ca.federal.net_tax")).toThrow(/Canada employment/i);
+    expect(cents(facts, "ca.federal.net_tax")).toBe(1143050n);
   });
 });
 
@@ -247,16 +248,18 @@ describe("donations credit tiers (s. 118.1(3))", () => {
 describe("gaps that must refuse rather than understate", () => {
   const base = { ...WHO, employmentIncome: 0, taxablePensionIncome: 50000 };
 
-  it("refuses the Canada employment amount when there is employment income", () => {
-    expect(() =>
-      cents({ ...WHO, employmentIncome: 50000 }, "ca.federal.canada_employment_amount"),
-    ).toThrow(/Canada employment|not modelled/i);
-  });
-
-  it("refuses medical expenses when claimed", () => {
-    expect(() =>
-      cents({ ...base, medicalExpenses: 3000 }, "ca.federal.medical_expense_amount"),
-    ).toThrow(/medical|not modelled/i);
+  it("medical expenses net off the lesser of $2,834 and 3% of net income", () => {
+    // net income 50,000 -> 3% = 1,500, which is less than 2,834
+    // 3,000 - 1,500 = 1,500 allowable
+    expect(cents({ ...base, medicalExpenses: 3000 }, "ca.federal.medical_expense_amount"))
+      .toBe(150000n);
+    // net income 200,000 -> 3% = 6,000, so the $2,834 cap binds instead
+    expect(
+      cents(
+        { ...WHO, employmentIncome: 0, taxablePensionIncome: 200000, medicalExpenses: 5000 },
+        "ca.federal.medical_expense_amount",
+      ),
+    ).toBe(216600n); // 5,000 - 2,834
   });
 
   it("refuses CPP on self-employment income", () => {
@@ -269,11 +272,11 @@ describe("gaps that must refuse rather than understate", () => {
     expect(cents(base, "ca.federal.net_tax_completeness")).toBe(0n);
   });
 
-  it("completeness guard refuses on OAS, self-employment or Quebec", () => {
+  it("completeness guard refuses on self-employment or Quebec", () => {
     // net_tax would be UNDERSTATED for these rather than refusing, because the
     // missing components are additive — this guard is what makes that visible.
+    // OAS is no longer here: s. 180.2 is modelled, so it is IN the total.
     for (const extra of [
-      { oasBenefits: 9000 },
       { selfEmploymentIncome: 20000 },
       { province: "QC" },
     ]) {
@@ -281,5 +284,35 @@ describe("gaps that must refuse rather than understate", () => {
         cents({ ...base, ...extra }, "ca.federal.net_tax_completeness"),
       ).toThrow(/does not yet model/i);
     }
+  });
+});
+
+
+describe("OAS recovery tax (s. 180.2)", () => {
+  it("is nil below the $93,454 base amount", () => {
+    const facts = { ...WHO, employmentIncome: 0, taxablePensionIncome: 80000, oasBenefits: 9000 };
+    expect(cents(facts, "ca.federal.oas_recovery_tax")).toBe(0n);
+  });
+
+  it("claws back 15% of income above the base amount", () => {
+    // net income = 100,000 + 9,000 OAS = 109,000
+    // 15% x (109,000 - 93,454) = 15% x 15,546 = 2,331.90, less than the OAS
+    const facts = { ...WHO, employmentIncome: 0, taxablePensionIncome: 100000, oasBenefits: 9000 };
+    expect(cents(facts, "ca.federal.oas_recovery_tax")).toBe(233190n);
+  });
+
+  it("never exceeds the OAS actually received", () => {
+    // A very high income would claw back more than the pension; s. 180.2(2)
+    // caps A at the OAS included in income.
+    const facts = { ...WHO, employmentIncome: 0, taxablePensionIncome: 400000, oasBenefits: 9000 };
+    expect(cents(facts, "ca.federal.oas_recovery_tax")).toBe(900000n);
+  });
+
+  it("is ADDED to net tax, not absorbed by the non-refundable floor", () => {
+    const facts = { ...WHO, employmentIncome: 0, taxablePensionIncome: 100000, oasBenefits: 9000, isAge65OrOlder: true };
+    const net = cents(facts, "ca.federal.net_tax");
+    const clawback = cents(facts, "ca.federal.oas_recovery_tax");
+    expect(clawback).toBeGreaterThan(0n);
+    expect(net).toBeGreaterThan(clawback);
   });
 });

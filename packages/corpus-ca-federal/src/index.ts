@@ -16,12 +16,10 @@
  * Everything NOT modelled still FAILS LOUD, in one of two ways. A target with
  * no rule raises NoApplicableRule. A rule that exists but covers a provision
  * deliberately out of scope raises NotModeled from an `unsupported` node —
- * the Canada employment amount and the medical credit both sit inside the
- * credit chain, so an employed filer's net tax refuses rather than being
- * quietly understated.
+ * child care (s. 63), capital losses and Schedule 8 CPP all work this way.
  *
  * The one place a gap CANNOT fail loud is an additive component that is simply
- * absent (the OAS recovery tax, Schedule 8 CPP, the Quebec abatement); an
+ * absent (Schedule 8 CPP, the Quebec abatement, AMT); an
  * absent addend is just a smaller total. `ca.federal.net_tax_completeness`
  * exists to make that detectable — it refuses whenever a fact shows one of
  * them is in play.
@@ -39,6 +37,7 @@ import { donationRules } from "./rules/donations.js";
 import { incomeRules } from "./rules/income.js";
 import { netTaxRules } from "./rules/net-tax.js";
 import { nonRefundableCreditRules } from "./rules/non-refundable-credits.js";
+import { socialBenefitsRepaymentRules } from "./rules/social-benefits-repayment.js";
 import { taxBracketRules } from "./rules/tax-brackets.js";
 import { taxableIncomeRules } from "./rules/taxable-income.js";
 
@@ -67,23 +66,26 @@ import { taxableIncomeRules } from "./rules/taxable-income.js";
  *                             percentage (s. 248(1)) — BPA with the
  *                             s. 118(1.1) phase-out, spousal, age, pension,
  *                             disability, tuition, student loan interest,
- *                             CPP/EI (s. 118.7). Canada employment (s. 118(10))
- *                             and medical (s. 118.2) REFUSE — indexed figures
- *                             unpinned.
+ *                             CPP/EI (s. 118.7), Canada employment
+ *                             (s. 118(10), $1,471 per CRA guide 5000-G p37)
+ *                             and medical (s. 118.2, floor = lesser of $2,834
+ *                             and 3% of net income, per 5006-R lines 108-109)
  * rules/donations.ts          s. 118.1(3) three tiers incl. the income-capped
  *                             33% tranche; the 75% limit refuses
  * rules/dividend-tax-credit.ts s. 121 — 6/11 eligible, 9/13 non-eligible
  * rules/cpp-self-employed.ts  REFUSES — YMPE/YAMPE and rates not held
- * rules/net-tax.ts            line 42000; DEFAULT_TARGET is now answerable,
- *                             plus a completeness guard that refuses when an
- *                             ADDITIVE unmodelled component (OAS recovery,
- *                             Schedule 8 CPP, Quebec abatement) applies
+ * rules/social-benefits-repayment.ts  OAS recovery tax (s. 180.2), base
+ *                             amount $93,454
+ * rules/net-tax.ts            line 42000; DEFAULT_TARGET is answerable, plus a
+ *                             completeness guard that refuses when an ADDITIVE
+ *                             unmodelled component (Schedule 8 CPP, Quebec
+ *                             abatement) applies
  *
  * ── STILL OUTSTANDING ──
  * TODO(rules/deductions.ts): CPP enhanced-contribution deduction
  *   (para. 60(e.1)); child care (s. 63) proper computation
- * TODO(rules/social-benefits-repayment.ts): OAS recovery tax (s. 180.2),
- *   EI clawback
+ * TODO(rules/social-benefits-repayment.ts): the EI benefit clawback (the OAS
+ *   recovery tax has landed)
  * TODO(rules/tax-brackets.ts): a TY2026 version once s. 117.1 indexed
  *   thresholds are published — 2026 currently refuses, by design
  * TODO(rules/amt.ts): revised minimum tax, ss. 127.5–127.55 — IN SCOPE
@@ -117,6 +119,7 @@ export const rules: Rule[] = [
   ...donationRules,
   ...dividendTaxCreditRules,
   ...cppSelfEmployedRules,
+  ...socialBenefitsRepaymentRules,
   ...netTaxRules,
 ];
 

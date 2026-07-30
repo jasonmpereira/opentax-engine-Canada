@@ -20,8 +20,8 @@
  *   NotModeledError        a rule EXISTS and was reached, but its formula hit
  *                          an `unsupported` node: the provision is deliberately
  *                          out of scope and the corpus refuses instead of
- *                          approximating. The Canada employment amount, the
- *                          medical credit, CPP on self-employment, child care.
+ *                          approximating. CPP on self-employment, child care,
+ *                          capital losses, the 75% donation limit.
  *
  * The second is the one worth guarding hardest. Those rules sit INSIDE the
  * net-tax chain, so if an `unsupported` node were ever softened to a zero, the
@@ -105,40 +105,26 @@ describe("corpus loads", () => {
   });
 });
 
-describe("an employed filer still refuses — and for the RIGHT reason", () => {
-  // The Canada employment amount (s. 118(10)) sits in the credit chain and its
-  // indexed figure is unpinned, so any return with employment income refuses.
-  // This is NotModeled, not NoApplicableRule: the rule exists and was reached.
-  it("net tax refuses with NotModeledError, not a number", () => {
-    expect(() => run(EMPLOYED_FILER, DEFAULT_TARGET)).toThrow(NotModeledError);
+describe("an employed filer now computes end to end", () => {
+  // The Canada employment amount ($1,471) and the medical floor ($2,834) were
+  // found in CRA's guide and return respectively, so neither refuses now.
+  it("net tax answers with a number", () => {
+    const v = run(EMPLOYED_FILER, DEFAULT_TARGET).value;
+    expect(v.type).toBe("money");
+    expect((v as { cents: bigint }).cents).toBeGreaterThan(0n);
   });
 
-  it("the refusal names the provision rather than failing opaquely", () => {
-    try {
-      run(EMPLOYED_FILER, DEFAULT_TARGET);
-      expect.unreachable("expected a refusal");
-    } catch (err) {
-      expect(err).toBeInstanceOf(OpenTaxError);
-      expect(String((err as Error).message)).toMatch(/118\(10\)|Canada employment/i);
-    }
-  });
-
-  it("the chain BELOW the gap still computes — the refusal is localised", () => {
-    // Tax before credits does not touch the Canada employment amount, so it
-    // must still answer. A gap that poisoned the whole corpus would be a bug.
-    expect((run(EMPLOYED_FILER, "ca.federal.tax_before_credits").value as { cents: bigint }).cents)
-      .toBeGreaterThan(0n);
+  it("the Canada employment amount is the lesser of $1,471 and employment income", () => {
+    expect((run(EMPLOYED_FILER, "ca.federal.canada_employment_amount").value as { cents: bigint }).cents)
+      .toBe(147100n);
+    // A filer earning less than the cap claims only what they earned.
+    expect((run({ ...EMPLOYED_FILER, employmentIncome: 900 }, "ca.federal.canada_employment_amount")
+      .value as { cents: bigint }).cents).toBe(90000n);
   });
 });
 
 describe("every deliberately unmodelled provision refuses when it applies", () => {
   const CASES: [string, Record<string, unknown>, RegExp][] = [
-    [
-      "ca.federal.canada_employment_amount",
-      { ...PENSIONER, employmentIncome: 40000 },
-      /Canada employment/i,
-    ],
-    ["ca.federal.medical_expense_amount", { ...PENSIONER, medicalExpenses: 4000 }, /medical/i],
     [
       "ca.federal.cpp_self_employment",
       { ...PENSIONER, selfEmploymentIncome: 30000 },
@@ -168,8 +154,6 @@ describe("every deliberately unmodelled provision refuses when it applies", () =
     // The refusals are conditional by design: a filer who claims none of these
     // must still get an answer, or the corpus would be useless.
     for (const target of [
-      "ca.federal.canada_employment_amount",
-      "ca.federal.medical_expense_amount",
       "ca.federal.cpp_self_employment",
       "ca.federal.child_care_expenses",
     ]) {
@@ -187,7 +171,6 @@ describe("targets the corpus has never modelled refuse outright", () => {
     "ca.federal.cwb",
     "ca.federal.ccb",
     "ca.federal.gst_credit",
-    "ca.federal.oas_recovery_tax",
   ];
 
   for (const target of UNMODELLED) {

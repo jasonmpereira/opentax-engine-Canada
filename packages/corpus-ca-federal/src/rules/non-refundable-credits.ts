@@ -24,14 +24,19 @@
  * Worksheet at line 30000 — an independent confirmation that the formula has
  * been read correctly.
  *
- * ── WHAT REFUSES, AND WHY ──
- * The Canada employment amount (s. 118(10)) and the medical expense credit
- * (s. 118.2) are NOT modelled. Both depend on an indexed dollar figure that
- * the CRA package we hold does not carry — the s. 118(10) $1,000 and the
- * s. 118.2 floor are both indexed under s. 117.1, and neither appears in
- * docs/parameters/ty2025-cra-forms.json. Rather than invent them, both refuse
- * when claimed and yield nil when not, so a return that does not involve them
- * still computes.
+ * ── INDEXED FIGURES NOT IN THE FORM FIELDS ──
+ * Two amounts here are indexed under s. 117.1 but are absent from the
+ * form-field constants in docs/parameters/ty2025-cra-forms.json, because CRA
+ * states them in prose rather than in a fillable box. Both were read from the
+ * package anyway and are primary authority:
+ *   Canada employment amount  $1,471   CRA guide 5000-G (2025), page 37
+ *   medical expense floor     $2,834   CRA return 5006-R (2025), lines 108-109
+ *                                      ("whichever is less: $2,834 or [3% of
+ *                                      line 23600]")
+ * That is why they no longer refuse. What still refuses is listed in the
+ * package roadmap — chiefly the disability supplement for a claimant under 18
+ * and the s. 118.2 line-33199 addition for other dependants, neither of which
+ * any fact can express.
  */
 
 import type { Expr, Rule } from "@invaro/opentax-core";
@@ -318,45 +323,68 @@ export const nonRefundableCreditRules: Rule[] = [
         "…there may be deducted the amount determined by the formula A × B where A is the appropriate percentage for the taxation year; and B is the lesser of (a) $1,000, and (b) the total of all amounts, each of which is an amount included in computing the individual's income for the taxation year from an office or employment…",
     },
     effectiveFrom: "2025-01-01",
+    effectiveTo: "2026-01-01",
     output: { type: "money" },
-    // The $1,000 is indexed under s. 117.1 and the TY2025 figure is not in
-    // docs/parameters/ty2025-cra-forms.json — the CRA package we hold does
-    // not carry it. Refusing only when there is employment income keeps every
-    // other return computable.
+    parameters: {
+      // The s. 118(10) $1,000 is indexed under s. 117.1. The TY2025 figure is
+      // not among the form-field constants, but CRA's guide states it in
+      // words: "you can claim $1,471 (the maximum amount) on line 31260"
+      // (5000-G (2025), page 37). Primary authority, just prose rather than a
+      // form field.
+      maximum: { value: c(1471), type: "money" },
+    },
+    // "the lesser of $1,000 [indexed] and … income from an office or
+    // employment". Self-employed income does NOT qualify — the guide is
+    // explicit ("Self-employed individuals are not eligible to claim this
+    // amount") — so this reads employmentIncome only.
     formula: {
-      kind: "if",
-      cond: { kind: "cmp", op: "gt", left: fact("employmentIncome"), right: money("0") },
-      then: {
-        kind: "unsupported",
-        reason:
-          "The Canada employment amount (s. 118(10)) is not modelled: its $1,000 base is indexed under s. 117.1 and the TY2025 indexed figure is not pinned in docs/parameters/ty2025-cra-forms.json. Supplying it requires the CRA indexation table or a form that prints it. Until then a return with employment income cannot be completed through this credit.",
-      },
-      else: money("0"),
+      kind: "min",
+      args: [{ kind: "param", name: "maximum" }, fact("employmentIncome")],
     },
   },
   {
     id: "ca.federal.medical_expense_amount",
     version: 1,
     jurisdiction: "ca.federal",
-    title: "Medical expenses — NOT MODELLED (indexed floor unpinned)",
+    title: "Allowable medical expenses (line 33200)",
     citation: {
       source: "Income Tax Act, R.S.C. 1985, c. 1 (5th Supp.), s. 118.2(1)",
       section: "s. 118.2(1)",
       url: "https://laws-lois.justice.gc.ca/eng/acts/I-3.3/section-118.2.html",
       excerpt:
-        "…the amount determined by the formula A × (B − C) − D … where C is the lesser of a fixed indexed dollar amount for the year and 3% of the individual's income for the year…",
+        "For the purpose of computing the tax payable under this Part by an individual for a taxation year, there may be deducted the amount determined by the formula A × [(B − C) + D] where A is the appropriate percentage for the taxation year; B is the total of the individual's medical expenses in respect of the individual, the individual's spouse or common-law partner or a child of the individual who has not attained the age of 18 years before the end of the taxation year…",
     },
     effectiveFrom: "2025-01-01",
+    effectiveTo: "2026-01-01",
     output: { type: "money" },
+    parameters: {
+      // C is the LESSER of an indexed dollar amount and 3% of income. CRA's
+      // return states both limbs at lines 108-109 of 5006-R (2025): "Amount
+      // from line 23600 x 3%" and "Enter whichever is less: $2,834 or the
+      // amount from line 108."
+      cap: { value: c(2834), type: "money" },
+    },
+    // (B − C), floored at nil. D — the s. 118.2(1) addition for expenses of
+    // other dependants (line 33199) — is NOT modelled: no fact identifies a
+    // dependant's medical expenses separately from the claimant's.
     formula: {
-      kind: "if",
-      cond: { kind: "cmp", op: "gt", left: fact("medicalExpenses"), right: money("0") },
-      then: {
-        kind: "unsupported",
-        reason:
-          "The medical expense credit (s. 118.2) is not modelled: the reduction is the LESSER of 3% of income and an indexed dollar amount, and that indexed amount for TY2025 is not pinned in docs/parameters/ty2025-cra-forms.json. Encoding only the 3% limb would over-state the credit for higher incomes.",
+      kind: "max0",
+      arg: {
+        kind: "sub",
+        left: fact("medicalExpenses"),
+        right: {
+          kind: "min",
+          args: [
+            { kind: "param", name: "cap" },
+            {
+              kind: "mulRate",
+              base: rule("ca.federal.net_income"),
+              rate: { num: "3", den: "100" },
+              round: "half-up",
+            },
+          ],
+        },
       },
-      else: money("0"),
     },
   },
 
