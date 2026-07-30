@@ -10,21 +10,35 @@
  *
  * PROPRIETARY — separately licensed from the AGPL engine (see ./LICENSE).
  *
- * Phase 2, slice 1 (income through federal tax before credits) has landed.
- * Everything NOT yet modelled still FAILS LOUD (NoApplicableRule, or an
- * `unsupported` node) rather than producing a plausible wrong answer. In
- * particular DEFAULT_TARGET — net federal tax, line 42000 — has no rule chain
- * yet, because the credits that stand between tax-before-credits and net tax
- * are slice 2. Asking for it refuses, and that is correct.
+ * Phase 2 slices 1 and 2 have landed: income → net federal tax. DEFAULT_TARGET
+ * is answerable for a return built only from modelled provisions.
+ *
+ * Everything NOT modelled still FAILS LOUD, in one of two ways. A target with
+ * no rule raises NoApplicableRule. A rule that exists but covers a provision
+ * deliberately out of scope raises NotModeled from an `unsupported` node —
+ * the Canada employment amount and the medical credit both sit inside the
+ * credit chain, so an employed filer's net tax refuses rather than being
+ * quietly understated.
+ *
+ * The one place a gap CANNOT fail loud is an additive component that is simply
+ * absent (the OAS recovery tax, Schedule 8 CPP, the Quebec abatement); an
+ * absent addend is just a smaller total. `ca.federal.net_tax_completeness`
+ * exists to make that detectable — it refuses whenever a fact shows one of
+ * them is in play.
  */
 
 import { loadCorpus } from "@invaro/opentax-core";
 import type { CorpusInput, LoadedCorpus, Rule } from "@invaro/opentax-core";
 import { facts } from "./facts.js";
 import { capitalGainsRules } from "./rules/capital-gains.js";
+import { cppSelfEmployedRules } from "./rules/cpp-self-employed.js";
 import { deductionRules } from "./rules/deductions.js";
+import { dividendTaxCreditRules } from "./rules/dividend-tax-credit.js";
 import { dividendRules } from "./rules/dividends.js";
+import { donationRules } from "./rules/donations.js";
 import { incomeRules } from "./rules/income.js";
+import { netTaxRules } from "./rules/net-tax.js";
+import { nonRefundableCreditRules } from "./rules/non-refundable-credits.js";
 import { taxBracketRules } from "./rules/tax-brackets.js";
 import { taxableIncomeRules } from "./rules/taxable-income.js";
 
@@ -48,36 +62,40 @@ import { taxableIncomeRules } from "./rules/taxable-income.js";
  * self-employment.ts; the Schedule 8 CPP-on-self-employment computation that
  * file was to carry is still outstanding below.
  *
- * ── SLICE 2, OUTSTANDING ──
- * Deductions → net income (23600):
+ * ── SLICE 2, LANDED: credits → net federal tax ──
+ * rules/non-refundable-credits.ts  s. 118 family at the 14.5% appropriate
+ *                             percentage (s. 248(1)) — BPA with the
+ *                             s. 118(1.1) phase-out, spousal, age, pension,
+ *                             disability, tuition, student loan interest,
+ *                             CPP/EI (s. 118.7). Canada employment (s. 118(10))
+ *                             and medical (s. 118.2) REFUSE — indexed figures
+ *                             unpinned.
+ * rules/donations.ts          s. 118.1(3) three tiers incl. the income-capped
+ *                             33% tranche; the 75% limit refuses
+ * rules/dividend-tax-credit.ts s. 121 — 6/11 eligible, 9/13 non-eligible
+ * rules/cpp-self-employed.ts  REFUSES — YMPE/YAMPE and rates not held
+ * rules/net-tax.ts            line 42000; DEFAULT_TARGET is now answerable,
+ *                             plus a completeness guard that refuses when an
+ *                             ADDITIVE unmodelled component (OAS recovery,
+ *                             Schedule 8 CPP, Quebec abatement) applies
+ *
+ * ── STILL OUTSTANDING ──
  * TODO(rules/deductions.ts): CPP enhanced-contribution deduction
  *   (para. 60(e.1)); child care (s. 63) proper computation
  * TODO(rules/social-benefits-repayment.ts): OAS recovery tax (s. 180.2),
  *   EI clawback
- *
- * Federal tax:
  * TODO(rules/tax-brackets.ts): a TY2026 version once s. 117.1 indexed
  *   thresholds are published — 2026 currently refuses, by design
- * TODO(rules/non-refundable-credits.ts): s. 118 family at the appropriate
- *   percentage (14.5% for 2025) — BPA with s. 118(1.1) enhancement
- *   ($16,129 → $14,538 phase-out), spousal, age, Canada employment,
- *   CPP/EI credits (s. 118.7), pension (s. 118(3)), tuition, medical,
- *   student loan interest
- * TODO(rules/donations.ts): s. 118.1 tiers incl. 33% tranche, 75% limit
- * TODO(rules/dividend-tax-credit.ts): s. 121 — 6/11 eligible, 9/13
- *   non-eligible
- * TODO(rules/cpp-self-employed.ts): Schedule 8 — CPP base/CPP1/CPP2
- *   (YMPE $71,300 / YAMPE $81,200 for 2025)
  * TODO(rules/amt.ts): revised minimum tax, ss. 127.5–127.55 — IN SCOPE
  *   for v1 (decision D2): 20.5% rate, $177,882 exemption (2025), credit
  *   restrictions, carryforward
  * TODO(rules/quebec-abatement.ts): 16.5% Quebec abatement (s. 120(2),
  *   Federal-Provincial Fiscal Arrangements Act) — decision D6; needs
  *   `province` = QC
- * TODO(rules/topup-credit.ts): decision D4 top-up credit
+ * TODO(rules/topup-credit.ts): decision D4 top-up credit — line 34990,
+ *   parameters now pinned (8,319.38 and 3.45%)
  * TODO(rules/cwb.ts): Canada Workers Benefit (s. 122.7, Schedule 6) with
  *   QC/AB/NU reconfigurations and disability supplement
- * TODO(rules/net-tax.ts): line 42000 assembly; defines DEFAULT_TARGET
  *
  * Benefits (milestone 2, AFNI-first — see README):
  * TODO(rules/afni.ts): adjusted family net income
@@ -95,6 +113,11 @@ export const rules: Rule[] = [
   ...deductionRules,
   ...taxableIncomeRules,
   ...taxBracketRules,
+  ...nonRefundableCreditRules,
+  ...donationRules,
+  ...dividendTaxCreditRules,
+  ...cppSelfEmployedRules,
+  ...netTaxRules,
 ];
 
 export const corpusInput: CorpusInput = {
@@ -113,9 +136,13 @@ export function getCorpus(): LoadedCorpus {
 }
 
 /**
- * The conventional top-level question this corpus will answer: net federal
- * tax (T1 line 42000). NEGATIVE = refund. No rule chain reaches it yet —
- * the engine refuses until Phase 2 lands.
+ * The top-level question this corpus answers: net federal tax (T1 line 42000).
+ * Modelled as of Phase 2 slice 2. Floors at nil — the s. 118 credits are
+ * NON-refundable, so they reduce tax to zero but never below it; a refund
+ * arises from refundable credits and withholding, which line 42000 excludes.
+ *
+ * Pair it with `ca.federal.net_tax_completeness` for a return that may involve
+ * an unmodelled additive component.
  */
 export const DEFAULT_TARGET = "ca.federal.net_tax";
 

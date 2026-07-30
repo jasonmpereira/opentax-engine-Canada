@@ -136,8 +136,150 @@ describe("the boundaries of what is modelled", () => {
     ).toThrow(NoApplicableRuleError);
   });
 
-  it("still refuses for net tax — credits are slice 2", () => {
+  it("net tax refuses for an employed filer — the s. 118(10) figure is unpinned", () => {
+    // Not NoApplicableRule: the rule exists and was reached. The Canada
+    // employment amount sits in the credit chain and its indexed figure is
+    // not held, so the corpus declines rather than approximating it.
     const facts = { ...WHO, employmentIncome: 85000 };
-    expect(() => cents(facts, "ca.federal.net_tax")).toThrow(NoApplicableRuleError);
+    expect(() => cents(facts, "ca.federal.net_tax")).toThrow(/Canada employment/i);
+  });
+});
+
+// ─────────────────────── Phase 2 slice 2: credits → net tax ───────────────────────
+
+describe("worked return: age 65+, $60,000 pension income, Ontario", () => {
+  // Chosen because it exercises the whole chain without tripping the
+  // Canada-employment refusal: BPA at full value, the age amount mid
+  // phase-out, and the pension amount at its $2,000 cap.
+  const facts = {
+    ...WHO,
+    employmentIncome: 0,
+    taxablePensionIncome: 60000,
+    isAge65OrOlder: true,
+  };
+
+  it("basic personal amount is unreduced below the phase-out", () => {
+    // $60,000 is well under the $177,882 start, so A + C = $16,129.
+    expect(cents(facts, "ca.federal.basic_personal_amount")).toBe(1612900n);
+  });
+
+  it("age amount is reduced by 15% of income over $45,522", () => {
+    // 9,028 - 0.15 x (60,000 - 45,522) = 9,028 - 2,171.70 = 6,856.30
+    expect(cents(facts, "ca.federal.age_amount")).toBe(685630n);
+  });
+
+  it("pension income amount caps at $2,000", () => {
+    expect(cents(facts, "ca.federal.pension_income_amount")).toBe(200000n);
+  });
+
+  it("credits apply the 14.5% appropriate percentage once, to the total", () => {
+    // amounts: 16,129 + 6,856.30 + 2,000 = 24,985.30
+    // credit : 14.5% x 24,985.30 = 3,622.8685 -> 3,622.87
+    expect(cents(facts, "ca.federal.non_refundable_credits")).toBe(362287n);
+  });
+
+  it("net federal tax is tax before credits less the credits", () => {
+    // before credits: 8,319.375 + 20.5% x 2,625 = 8,857.50
+    expect(cents(facts, "ca.federal.tax_before_credits")).toBe(885750n);
+    // 8,857.50 - 3,622.87 = 5,234.63
+    expect(cents(facts, "ca.federal.net_tax")).toBe(523463n);
+  });
+});
+
+describe("basic personal amount phase-out (s. 118(1.1))", () => {
+  const at = (income: number) =>
+    cents(
+      { ...WHO, employmentIncome: 0, taxablePensionIncome: income },
+      "ca.federal.basic_personal_amount",
+    );
+
+  it("is the full $16,129 at the phase-out start", () => {
+    expect(at(177882)).toBe(1612900n);
+  });
+
+  it("is the floor $14,538 at the top-bracket threshold", () => {
+    expect(at(253414)).toBe(1453800n);
+  });
+
+  it("is halfway between at the midpoint of the phase-out band", () => {
+    // midpoint = 177,882 + 75,532/2 = 215,648 -> BPA = 14,538 + 1,591/2
+    // 1,591/2 = 795.50, so 14,538 + 795.50 = 15,333.50
+    expect(at(215648)).toBe(1533350n);
+  });
+
+  it("never falls below the floor above the top bracket", () => {
+    expect(at(400000)).toBe(1453800n);
+  });
+});
+
+describe("dividend tax credit (s. 121)", () => {
+  it("returns 6/11 of the eligible gross-up and 9/13 of the non-eligible", () => {
+    const facts = {
+      ...WHO, employmentIncome: 0,
+      eligibleDividends: 10000, nonEligibleDividends: 10000,
+    };
+    // eligible:     38% x 10,000 = 3,800 -> 6/11  = 2,072.727... -> 2,072.73
+    // non-eligible: 15% x 10,000 = 1,500 -> 9/13  = 1,038.461... -> 1,038.46
+    expect(cents(facts, "ca.federal.dividend_tax_credit")).toBe(311119n);
+  });
+});
+
+describe("donations credit tiers (s. 118.1(3))", () => {
+  it("applies 14.5% to the first $200 and 29% above it below the top bracket", () => {
+    const facts = { ...WHO, employmentIncome: 0, taxablePensionIncome: 80000, charitableDonations: 1200 };
+    // 14.5% x 200 = 29.00 ; 29% x 1,000 = 290.00 ; no 33% tier (income < 253,414)
+    expect(cents(facts, "ca.federal.donations_credit")).toBe(31900n);
+  });
+
+  it("gives no 33% tier when no income sits in the top bracket", () => {
+    const facts = { ...WHO, employmentIncome: 0, taxablePensionIncome: 150000, charitableDonations: 100000 };
+    // income is below 253,414, so D = 0 and everything above $200 is at 29%
+    // 14.5% x 200 + 29% x 99,800 = 29.00 + 28,942.00 = 28,971.00
+    expect(cents(facts, "ca.federal.donations_credit")).toBe(2897100n);
+  });
+
+  it("refuses when donations exceed 75% of net income", () => {
+    const facts = { ...WHO, employmentIncome: 0, taxablePensionIncome: 50000, charitableDonations: 45000 };
+    expect(() => cents(facts, "ca.federal.donations_annual_limit")).toThrow(/75%|not modelled/i);
+  });
+});
+
+describe("gaps that must refuse rather than understate", () => {
+  const base = { ...WHO, employmentIncome: 0, taxablePensionIncome: 50000 };
+
+  it("refuses the Canada employment amount when there is employment income", () => {
+    expect(() =>
+      cents({ ...WHO, employmentIncome: 50000 }, "ca.federal.canada_employment_amount"),
+    ).toThrow(/Canada employment|not modelled/i);
+  });
+
+  it("refuses medical expenses when claimed", () => {
+    expect(() =>
+      cents({ ...base, medicalExpenses: 3000 }, "ca.federal.medical_expense_amount"),
+    ).toThrow(/medical|not modelled/i);
+  });
+
+  it("refuses CPP on self-employment income", () => {
+    expect(() =>
+      cents({ ...base, selfEmploymentIncome: 40000 }, "ca.federal.cpp_self_employment"),
+    ).toThrow(/CPP|not modelled/i);
+  });
+
+  it("completeness guard passes for a plain return", () => {
+    expect(cents(base, "ca.federal.net_tax_completeness")).toBe(0n);
+  });
+
+  it("completeness guard refuses on OAS, self-employment or Quebec", () => {
+    // net_tax would be UNDERSTATED for these rather than refusing, because the
+    // missing components are additive — this guard is what makes that visible.
+    for (const extra of [
+      { oasBenefits: 9000 },
+      { selfEmploymentIncome: 20000 },
+      { province: "QC" },
+    ]) {
+      expect(() =>
+        cents({ ...base, ...extra }, "ca.federal.net_tax_completeness"),
+      ).toThrow(/does not yet model/i);
+    }
   });
 });
