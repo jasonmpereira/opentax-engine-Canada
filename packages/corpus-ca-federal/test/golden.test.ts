@@ -316,3 +316,34 @@ describe("OAS recovery tax (s. 180.2)", () => {
     expect(net).toBeGreaterThan(clawback);
   });
 });
+
+describe("top-up tax credit (line 34990, new for 2025)", () => {
+  it("is nil when credits fall below the first-bracket credit value", () => {
+    // BPA-only pensioner: credits well under $8,319.38.
+    const facts = { ...WHO, employmentIncome: 0, taxablePensionIncome: 30000 };
+    expect(cents(facts, "ca.federal.topup_tax_credit")).toBe(0n);
+  });
+
+  it("reproduces the Federal Worksheet chart exactly", () => {
+    // A filer with large enough credits to clear the $8,319.38 subtraction.
+    const facts = {
+      ...WHO, employmentIncome: 0, taxablePensionIncome: 250000,
+      isAge65OrOlder: true, medicalExpenses: 60000,
+    };
+    const nrtc = cents(facts, "ca.federal.non_refundable_credits");
+    const gifts = cents(facts, "ca.federal.donations_credit");
+    // chart: (line1 + line2 - 8,319.38) floored at 0, x 3.45%
+    const base = nrtc + gifts - 831938n;
+    const expected = base <= 0n ? 0n : (base * 345n + 5000n) / 10000n;
+    expect(cents(facts, "ca.federal.topup_tax_credit")).toBe(expected);
+    expect(cents(facts, "ca.federal.topup_tax_credit")).toBeGreaterThan(0n);
+  });
+
+  it("the two chart constants are what CRA's arithmetic implies", () => {
+    // $8,319.38 = 14.5% of the $57,375 threshold (the credit value of the
+    // first bracket); 3.45% = 0.5/14.5, which converts a credit computed at
+    // 14.5% into the extra 0.5% that restores a 15% rate.
+    expect(831938n).toBe((5737500n * 145n + 500n) / 1000n);
+    expect(Math.round((0.5 / 14.5) * 10000) / 100).toBeCloseTo(3.45, 2);
+  });
+});

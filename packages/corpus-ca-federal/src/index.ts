@@ -39,6 +39,7 @@ import { netTaxRules } from "./rules/net-tax.js";
 import { nonRefundableCreditRules } from "./rules/non-refundable-credits.js";
 import { socialBenefitsRepaymentRules } from "./rules/social-benefits-repayment.js";
 import { taxBracketRules } from "./rules/tax-brackets.js";
+import { topupCreditRules } from "./rules/topup-credit.js";
 import { taxableIncomeRules } from "./rules/taxable-income.js";
 
 /**
@@ -74,6 +75,8 @@ import { taxableIncomeRules } from "./rules/taxable-income.js";
  *                             33% tranche; the 75% limit refuses
  * rules/dividend-tax-credit.ts s. 121 — 6/11 eligible, 9/13 non-eligible
  * rules/cpp-self-employed.ts  REFUSES — YMPE/YAMPE and rates not held
+ * rules/topup-credit.ts       line 34990, NEW for 2025 — restores a 15% rate
+ *                             on credits above the first bracket threshold
  * rules/social-benefits-repayment.ts  OAS recovery tax (s. 180.2), base
  *                             amount $93,454
  * rules/net-tax.ts            line 42000; DEFAULT_TARGET is answerable, plus a
@@ -94,8 +97,6 @@ import { taxableIncomeRules } from "./rules/taxable-income.js";
  * TODO(rules/quebec-abatement.ts): 16.5% Quebec abatement (s. 120(2),
  *   Federal-Provincial Fiscal Arrangements Act) — decision D6; needs
  *   `province` = QC
- * TODO(rules/topup-credit.ts): decision D4 top-up credit — line 34990,
- *   parameters now pinned (8,319.38 and 3.45%)
  * TODO(rules/cwb.ts): Canada Workers Benefit (s. 122.7, Schedule 6) with
  *   QC/AB/NU reconfigurations and disability supplement
  *
@@ -119,6 +120,7 @@ export const rules: Rule[] = [
   ...donationRules,
   ...dividendTaxCreditRules,
   ...cppSelfEmployedRules,
+  ...topupCreditRules,
   ...socialBenefitsRepaymentRules,
   ...netTaxRules,
 ];

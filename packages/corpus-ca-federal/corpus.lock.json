@@ -1,9 +1,9 @@
 {
   "name": "@opencantax/corpus-ca-federal",
   "version": "0.1.0",
-  "merkleRoot": "sha256:8079bcd3d05ddea7098112cb85afc6cfb24668be95123600ac6d1941cbdfdbd0",
+  "merkleRoot": "sha256:3eea9e4f8137a867d9a1f49ae57a7c39989e5565e8d6e2ea5adbb9384dd92b79",
   "defaultTarget": "ca.federal.net_tax",
-  "ruleCount": 36,
+  "ruleCount": 37,
   "factCount": 33,
   "rules": {
     "ca.federal.age_amount@1": "sha256:09888c97a6bf2daf701db833a9c3a6cdc353b95f34bed409da3a3ac54c8c02e6",
@@ -24,7 +24,7 @@
     "ca.federal.net_capital_losses@1": "sha256:6203a23dc778c09047e99d6015ef58bcf83fefdc438445f85205562a4d37f0cf",
     "ca.federal.net_income@1": "sha256:da6c9805d0ffff8debb8f7d6c4307db0814b5ff1eeb6027da9310eb08e38c79c",
     "ca.federal.net_tax_completeness@1": "sha256:883cf536308a0c07ac93d3c5d56ff4eed734643f940aca20987513a5e4bfa7c0",
-    "ca.federal.net_tax@1": "sha256:72793e66ad5b3c4c47c264f7c6549b6dbaecec337fe72ab47edd7b43a46fa7bd",
+    "ca.federal.net_tax@1": "sha256:1d56b651640cb1feba6b3340aca53d9a9bdb11858c8b53701e8e488d74f4a5d7",
     "ca.federal.non_refundable_credits@1": "sha256:6bf5d104de99ba3103c5c807390d499c8556abc011ce4686d3080340d55a0e7d",
     "ca.federal.oas_recovery_tax@1": "sha256:7b841ad4a36abe8cdf2b7ded7e9744758683eea77f572069135aabf379186a88",
     "ca.federal.pension_and_benefit_income@1": "sha256:dc618f48e69a02ab77dcbebd9dac0395cd6c62ab16640178a0ed4b47ce25227e",
@@ -38,6 +38,7 @@
     "ca.federal.taxable_eligible_dividends@1": "sha256:5920cc82210a1d4a81c175da09564e5f0216feb5c0ef0823ac78e5a50affc346",
     "ca.federal.taxable_income@1": "sha256:90f3ce4e74c382334410ef3780cb3b9ad5a154fa7801da10db754fa20b04a629",
     "ca.federal.taxable_non_eligible_dividends@1": "sha256:70dd8730d767bed70818596bb625b33433588eff9f3c2f2f0298097b3824379b",
+    "ca.federal.topup_tax_credit@1": "sha256:5eda4c187446e1d19313fbc56050bae0956d6c17cf638f5fc90d847482148bb4",
     "ca.federal.total_deductions@1": "sha256:d7dc77896e1bb457f10491fdb03422526c3ff9cd8705784414a0dcb42c8f3589",
     "ca.federal.total_income@1": "sha256:8c2d8a50f627ce8c73e1ff84942472cf5392c4512ee52dd990e79577e0c885cb",
     "ca.federal.tuition_amount@1": "sha256:ff1dac80ef87c08f556eab0d80806e7593fd7a266e8763e823672ce101cd0e74",

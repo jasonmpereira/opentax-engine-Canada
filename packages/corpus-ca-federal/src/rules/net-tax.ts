@@ -6,6 +6,7 @@
  *   − non-refundable credits      (s. 118 family, Part B)
  *   − dividend tax credit         (s. 121)
  *   − donations credit            (s. 118.1(3))
+ *   − top-up tax credit           (line 34990, new for 2025)
  *   = net federal tax, floored at nil
  *
  * The floor is real law, not defensive coding: these are NON-refundable
@@ -66,6 +67,8 @@ export const netTaxRules: Rule[] = [
                 rule("ca.federal.non_refundable_credits"),
                 rule("ca.federal.dividend_tax_credit"),
                 rule("ca.federal.donations_credit"),
+                // Line 34990 feeds line 35000 alongside the other credits.
+                rule("ca.federal.topup_tax_credit"),
               ],
             },
           },
