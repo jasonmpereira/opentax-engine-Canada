@@ -394,3 +394,49 @@ describe("CPP on self-employment (Schedule 8)", () => {
     expect(cents(maxed, "ca.federal.net_tax")).toBeGreaterThan(0n);
   });
 });
+
+describe("Canada Workers Benefit (s. 122.7, refundable, line 45300)", () => {
+  it("phases in at 27% of working income over $3,000, capped at $1,633 single", () => {
+    // working income 8,000 -> 27% x 5,000 = 1,350, under the 1,633 cap.
+    // net income 8,000 is below the 26,855 phase-out, so B = 0.
+    const f = { ...WHO, employmentIncome: 8000 };
+    expect(cents(f, "ca.federal.cwb_basic")).toBe(135000n);
+  });
+
+  it("caps at the indexed maximum once phased in", () => {
+    // working income 20,000 -> 27% x 17,000 = 4,590, so the 1,633 cap binds.
+    const f = { ...WHO, employmentIncome: 20000 };
+    expect(cents(f, "ca.federal.cwb_basic")).toBe(163300n);
+  });
+
+  it("phases out at 15% of net income over $26,855 and reaches nil", () => {
+    // Schedule 6 p3 prints the single basic cut-off as $37,742.
+    expect(cents({ ...WHO, employmentIncome: 37742 }, "ca.federal.cwb_basic")).toBe(0n);
+    // Just below it, still positive.
+    expect(cents({ ...WHO, employmentIncome: 35000 }, "ca.federal.cwb_basic")).toBeGreaterThan(0n);
+  });
+
+  it("adds the disability supplement only with a certificate", () => {
+    const base = { ...WHO, employmentIncome: 20000 };
+    expect(cents(base, "ca.federal.cwb_disability_supplement")).toBe(0n);
+    // 27% x (20,000 - 1,150) = 5,089.50, so the $843 cap binds; no phase-out
+    // at this income.
+    expect(cents({ ...base, hasDisabilityTaxCert: true }, "ca.federal.cwb_disability_supplement"))
+      .toBe(84300n);
+  });
+
+  it("REFUSES for Alberta, Quebec and Nunavut — s. 122.71 agreement amounts", () => {
+    for (const province of ["AB", "QC", "NU"]) {
+      expect(() =>
+        cents({ ...WHO, province, employmentIncome: 20000 }, "ca.federal.cwb"),
+      ).toThrow(/122\.71|agreement/i);
+    }
+  });
+
+  it("computes for every other province", () => {
+    for (const province of ["ON", "BC", "MB", "NS", "SK", "YT"]) {
+      expect(cents({ ...WHO, province, employmentIncome: 20000 }, "ca.federal.cwb"))
+        .toBe(163300n);
+    }
+  });
+});

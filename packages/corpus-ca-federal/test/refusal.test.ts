@@ -145,6 +145,13 @@ describe("every deliberately unmodelled provision refuses when it applies", () =
       /Quebec abatement|line 44000/i,
     ],
     [
+      // The CWB computes for most provinces; AB/QC/NU refuse permanently
+      // because s. 122.71 sets their amounts by unpublished agreement.
+      "ca.federal.cwb",
+      { ...PENSIONER, province: "AB", employmentIncome: 20000 },
+      /122\.71|agreement/i,
+    ],
+    [
       "ca.federal.donations_annual_limit",
       { ...PENSIONER, charitableDonations: 50000 },
       /75%/i,
@@ -176,7 +183,6 @@ describe("targets the corpus has never modelled refuse outright", () => {
   // guesses at, the answer is a refusal, not 0.
   const UNMODELLED = [
     "ca.federal.amt",
-    "ca.federal.cwb",
     "ca.federal.ccb",
     "ca.federal.gst_credit",
   ];
@@ -210,7 +216,7 @@ describe("the refusal is structured and machine-routable", () => {
 
   it("errors carry a code that a caller can branch on", () => {
     try {
-      run(PENSIONER, "ca.federal.cwb");
+      run(PENSIONER, "ca.federal.ccb");
       expect.unreachable("expected a refusal");
     } catch (err) {
       expect(err).toBeInstanceOf(OpenTaxError);

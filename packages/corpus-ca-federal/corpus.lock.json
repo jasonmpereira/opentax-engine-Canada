@@ -1,9 +1,9 @@
 {
   "name": "@opencantax/corpus-ca-federal",
   "version": "0.1.0",
-  "merkleRoot": "sha256:72165cfdc9a8e2d33ae034927f736e69be91e7f831c4f0fffe58ee7d63319c90",
+  "merkleRoot": "sha256:645743cd96425938547d4e5ed4069b3fd731ba6efec8ed5150d712e9c9e41338",
   "defaultTarget": "ca.federal.net_tax",
-  "ruleCount": 44,
+  "ruleCount": 48,
   "factCount": 33,
   "rules": {
     "ca.federal.age_amount@1": "sha256:09888c97a6bf2daf701db833a9c3a6cdc353b95f34bed409da3a3ac54c8c02e6",
@@ -19,6 +19,10 @@
     "ca.federal.cpp_self_employment_credit_amount@1": "sha256:c7f7b10b1c309af6f5c47edac8c8f0d0646d6df10b34c4334178b92e35041725",
     "ca.federal.cpp_self_employment_deduction@1": "sha256:fd998af56f6261fa2b5aa2762d575acfd89aed09e3fdede908d3029fbccc201f",
     "ca.federal.cpp2_self_employment_earnings@1": "sha256:be38ea0ad3a1e766fbae6d8bc7dea59ad7fb67fd76ccf0e9afc6755e1c5d5a95",
+    "ca.federal.cwb_basic@1": "sha256:dfeeaa48bdebcee0140a7a3dd45a77d160398e080789cfdc67a8d8f01b7aced9",
+    "ca.federal.cwb_disability_supplement@1": "sha256:84c050d1eba2f371187c8885f344df93bb059087438598af8789ffa9620bc669",
+    "ca.federal.cwb_working_income@1": "sha256:3a0c016d3782a57e68d553fd866028a27c1476d852bff718e7866b81246a85e0",
+    "ca.federal.cwb@1": "sha256:bf4a2eb07ba28cdea90f8e416382a43a7af1e4ec2bbbb564876cda901facb5ae",
     "ca.federal.disability_amount@1": "sha256:d9e10301a27ab510af0381b01731c0fd35e5e78319301311737d87fb9658c291",
     "ca.federal.dividend_tax_credit@1": "sha256:135c9b28f6bd364ca4f135536271ebf8d96e988b2b00e742cd5508855b7d8a61",
     "ca.federal.division_c_deductions@1": "sha256:96f5ed18b9e66962c42b34ba9b1ce4c352b83bfc264c1d6c1fe51f6569131c6c",

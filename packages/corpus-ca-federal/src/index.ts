@@ -31,6 +31,7 @@ import { loadCorpus } from "@invaro/opentax-core";
 import type { CorpusInput, LoadedCorpus, Rule } from "@invaro/opentax-core";
 import { facts } from "./facts.js";
 import { capitalGainsRules } from "./rules/capital-gains.js";
+import { cwbRules } from "./rules/cwb.js";
 import { cppSelfEmployedRules } from "./rules/cpp-self-employed.js";
 import { deductionRules } from "./rules/deductions.js";
 import { dividendTaxCreditRules } from "./rules/dividend-tax-credit.js";
@@ -84,6 +85,8 @@ import { taxableIncomeRules } from "./rules/taxable-income.js";
  *                             on credits above the first bracket threshold
  * rules/social-benefits-repayment.ts  OAS recovery tax (s. 180.2), base
  *                             amount $93,454
+ * rules/cwb.ts                s. 122.7 refundable CWB (line 45300), standard
+ *                             amounts; AB/QC/NU refuse under s. 122.71
  * rules/quebec-abatement.ts   line 44000 — REFUSES; see the file for why 16.5%
  *                             is 3% (ITA) + 8.5 + 5 units (FPFAA ss. 27(2),(3))
  * rules/net-tax.ts            line 42000; DEFAULT_TARGET is answerable, plus
@@ -104,8 +107,12 @@ import { taxableIncomeRules } from "./rules/taxable-income.js";
  *   compute basic federal tax (line 42900) and the s. 127.51 minimum amount,
  *   which ITA s. 120(4) makes the base. The 16.5% itself is settled: 3%
  *   (ITA 120(2)) + 8.5 + 5 units (FPFAA ss. 27(2),(3)).
- * TODO(rules/cwb.ts): Canada Workers Benefit (s. 122.7, Schedule 6) with
- *   QC/AB/NU reconfigurations and disability supplement
+ * TODO(rules/cwb.ts): AB/QC/NU only. The standard rule has landed; those
+ *   three provinces refuse PERMANENTLY on statutory grounds — s. 122.71 sets
+ *   their amounts by federal-provincial AGREEMENT, never published as a legal
+ *   instrument. Closing them needs CRA forms 5009-S6 / 5014-S6 / 5005-S6
+ *   dropped into docs/reference-local/cra-t1-2025/{alberta,nunavut,quebec}/;
+ *   tools/cra-forms/extract_params.py will read them unchanged.
  *
  * Benefits (milestone 2, AFNI-first — see README):
  * TODO(rules/afni.ts): adjusted family net income
@@ -129,6 +136,7 @@ export const rules: Rule[] = [
   ...cppSelfEmployedRules,
   ...topupCreditRules,
   ...quebecAbatementRules,
+  ...cwbRules,
   ...socialBenefitsRepaymentRules,
   ...netTaxRules,
 ];
