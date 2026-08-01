@@ -5,6 +5,7 @@
  * Modelled in this slice:
  *   RRSP premiums          s. 146(5)          line 20800
  *   union / professional   para. 8(1)(i)      line 21200
+ *   CPP on self-employment paras. 60(e),(e.1) line 22200
  *
  * Deliberately NOT modelled, and refusing rather than silently zeroing:
  *   child care expenses    s. 63              line 21400
@@ -125,6 +126,12 @@ export const deductionRules: Rule[] = [
         rule("ca.federal.rrsp_deduction"),
         rule("ca.federal.union_and_professional_dues"),
         rule("ca.federal.child_care_expenses"),
+        // Schedule 8: the employer half of base CPP plus the enhanced
+        // portion, deductible under paras. 60(e) and 60(e.1).
+        rule("ca.federal.cpp_self_employment_deduction"),
+        // Guard: refuses if employment and self-employment CPP would both
+        // draw on the single shared YMPE ceiling.
+        rule("ca.federal.cpp_both_employment_and_self_employment"),
       ],
     },
   },

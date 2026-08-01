@@ -16,10 +16,16 @@
  * ── WHAT IS NOT IN THIS TOTAL ──
  * Several line-42000 components are still unmodelled, and each has its own
  * refusing rule so the gap is visible rather than silently absorbed:
- *   CPP on self-employment (Sch. 8)   cpp-self-employed.ts — YMPE/YAMPE unheld
  *   alternative minimum tax (s. 127.5) not yet written (decision D2: in scope)
- *   Quebec abatement (s. 120(2))      not yet written (decision D6)
  *   Canada Workers Benefit (s. 122.7) refundable, not part of this line
+ *
+ * The Quebec abatement is NOT in that list, and correcting that is the point
+ * of the 2026-07-29 FPFAA research. It is T1 line 44000 — Step 6, inside
+ * "total credits" — not a reduction of line 42000. ITA s. 120(2) deems it
+ * "paid ... on account of the individual's tax", i.e. a refundable payment
+ * applied AFTER net federal tax. So net_tax is CORRECT as computed for a
+ * Quebec resident; what the corpus cannot yet produce is the abatement line
+ * itself. See rules/quebec-abatement.ts.
  *
  * A return that involves any of those will be UNDERSTATED by this rule rather
  * than refused, because the components are additive and simply absent. That is
@@ -99,23 +105,13 @@ export const netTaxRules: Rule[] = [
     // just a smaller total. This rule makes the absence detectable: it refuses
     // whenever a fact shows one of them is in play. Callers wanting a
     // completeness-checked answer evaluate this alongside net_tax.
-    formula: {
-      kind: "if",
-      cond: {
-        kind: "or",
-        args: [
-          // CPP on self-employment (Schedule 8)
-          { kind: "cmp", op: "gt", left: fact("selfEmploymentIncome"), right: money("0") },
-          // Quebec abatement (s. 120(2))
-          { kind: "cmp", op: "eq", left: fact("province"), right: { kind: "enum", value: "QC" } },
-        ],
-      },
-      then: {
-        kind: "unsupported",
-        reason:
-          "This return involves a line-42000 component the corpus does not yet model: self-employment income (Schedule 8 CPP) or Quebec residence (s. 120(2) abatement). Unlike the other gaps in this corpus these are ADDITIVE, so net_tax would be understated rather than refused. Do not rely on ca.federal.net_tax for this return.",
-      },
-      else: money("0"),
-    },
+    // As of the FPFAA research (2026-07-29) there is NO known unmodelled
+    // ADDITIVE component of line 42000 left. The guard is retained, and
+    // deliberately yields nil rather than being deleted: the next additive
+    // gap (AMT under s. 127.5, decision D2) belongs here the moment work on
+    // it starts, and a guard that has to be re-invented is a guard that will
+    // not be. Its shrinking from three branches to none is the record of the
+    // gaps closing.
+    formula: money("0"),
   },
 ];

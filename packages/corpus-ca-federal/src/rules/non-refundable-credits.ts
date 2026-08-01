@@ -307,7 +307,12 @@ export const nonRefundableCreditRules: Rule[] = [
     // produces an over-stated credit — a known limit, recorded here.
     formula: {
       kind: "add",
-      args: [fact("cppContributionsPaid"), fact("eiPremiumsPaid")],
+      args: [
+        fact("cppContributionsPaid"),
+        fact("eiPremiumsPaid"),
+        // Schedule 8: the employee half of base CPP on self-employment.
+        rule("ca.federal.cpp_self_employment_credit_amount"),
+      ],
     },
   },
   {

@@ -18,11 +18,13 @@
  * deliberately out of scope raises NotModeled from an `unsupported` node —
  * child care (s. 63), capital losses and Schedule 8 CPP all work this way.
  *
- * The one place a gap CANNOT fail loud is an additive component that is simply
- * absent (Schedule 8 CPP, the Quebec abatement, AMT); an
- * absent addend is just a smaller total. `ca.federal.net_tax_completeness`
- * exists to make that detectable — it refuses whenever a fact shows one of
- * them is in play.
+ * The one place a gap CANNOT fail loud is an ADDITIVE component of line 42000
+ * that is simply absent — an absent addend is just a smaller total, which no
+ * `unsupported` node can catch. `ca.federal.net_tax_completeness` exists to
+ * make that detectable. It began with three branches and now has none: the
+ * OAS recovery tax and Schedule 8 CPP were modelled, and the Quebec abatement
+ * turned out not to belong to line 42000 at all (it is line 44000, applied
+ * after). AMT is the next candidate for it.
  */
 
 import { loadCorpus } from "@invaro/opentax-core";
@@ -37,6 +39,7 @@ import { donationRules } from "./rules/donations.js";
 import { incomeRules } from "./rules/income.js";
 import { netTaxRules } from "./rules/net-tax.js";
 import { nonRefundableCreditRules } from "./rules/non-refundable-credits.js";
+import { quebecAbatementRules } from "./rules/quebec-abatement.js";
 import { socialBenefitsRepaymentRules } from "./rules/social-benefits-repayment.js";
 import { taxBracketRules } from "./rules/tax-brackets.js";
 import { topupCreditRules } from "./rules/topup-credit.js";
@@ -59,8 +62,8 @@ import { taxableIncomeRules } from "./rules/taxable-income.js";
  * rules/tax-brackets.ts       s. 117(2) TY2025 — BLENDED 14.5% lowest rate
  *
  * Business income (s. 9) lives in income.ts rather than a separate
- * self-employment.ts; the Schedule 8 CPP-on-self-employment computation that
- * file was to carry is still outstanding below.
+ * self-employment.ts; the Schedule 8 CPP computation is in
+ * rules/cpp-self-employed.ts.
  *
  * ── SLICE 2, LANDED: credits → net federal tax ──
  * rules/non-refundable-credits.ts  s. 118 family at the 14.5% appropriate
@@ -74,19 +77,21 @@ import { taxableIncomeRules } from "./rules/taxable-income.js";
  * rules/donations.ts          s. 118.1(3) three tiers incl. the income-capped
  *                             33% tranche; the 75% limit refuses
  * rules/dividend-tax-credit.ts s. 121 — 6/11 eligible, 9/13 non-eligible
- * rules/cpp-self-employed.ts  REFUSES — YMPE/YAMPE and rates not held
+ * rules/cpp-self-employed.ts  Schedule 8 — YMPE $71,300 / YAMPE $81,200,
+ *                             base 9.9% / CPP1 2% / CPP2 8%; refuses only when
+ *                             employment and self-employment share one ceiling
  * rules/topup-credit.ts       line 34990, NEW for 2025 — restores a 15% rate
  *                             on credits above the first bracket threshold
  * rules/social-benefits-repayment.ts  OAS recovery tax (s. 180.2), base
  *                             amount $93,454
- * rules/net-tax.ts            line 42000; DEFAULT_TARGET is answerable, plus a
- *                             completeness guard that refuses when an ADDITIVE
- *                             unmodelled component (Schedule 8 CPP, Quebec
- *                             abatement) applies
+ * rules/quebec-abatement.ts   line 44000 — REFUSES; see the file for why 16.5%
+ *                             is 3% (ITA) + 8.5 + 5 units (FPFAA ss. 27(2),(3))
+ * rules/net-tax.ts            line 42000; DEFAULT_TARGET is answerable, plus
+ *                             the completeness guard (now empty — see above)
  *
  * ── STILL OUTSTANDING ──
- * TODO(rules/deductions.ts): CPP enhanced-contribution deduction
- *   (para. 60(e.1)); child care (s. 63) proper computation
+ * TODO(rules/deductions.ts): child care (s. 63) proper computation (the
+ *   para. 60(e.1) enhanced-contribution deduction has landed via Schedule 8)
  * TODO(rules/social-benefits-repayment.ts): the EI benefit clawback (the OAS
  *   recovery tax has landed)
  * TODO(rules/tax-brackets.ts): a TY2026 version once s. 117.1 indexed
@@ -94,9 +99,11 @@ import { taxableIncomeRules } from "./rules/taxable-income.js";
  * TODO(rules/amt.ts): revised minimum tax, ss. 127.5–127.55 — IN SCOPE
  *   for v1 (decision D2): 20.5% rate, $177,882 exemption (2025), credit
  *   restrictions, carryforward
- * TODO(rules/quebec-abatement.ts): 16.5% Quebec abatement (s. 120(2),
- *   Federal-Provincial Fiscal Arrangements Act) — decision D6; needs
- *   `province` = QC
+ * TODO(rules/quebec-abatement.ts): the rule exists and REFUSES. To close D6:
+ *   ingest FPFAA (F-8) into docs/sources/ from the Justice Canada mirror, then
+ *   compute basic federal tax (line 42900) and the s. 127.51 minimum amount,
+ *   which ITA s. 120(4) makes the base. The 16.5% itself is settled: 3%
+ *   (ITA 120(2)) + 8.5 + 5 units (FPFAA ss. 27(2),(3)).
  * TODO(rules/cwb.ts): Canada Workers Benefit (s. 122.7, Schedule 6) with
  *   QC/AB/NU reconfigurations and disability supplement
  *
@@ -121,6 +128,7 @@ export const rules: Rule[] = [
   ...dividendTaxCreditRules,
   ...cppSelfEmployedRules,
   ...topupCreditRules,
+  ...quebecAbatementRules,
   ...socialBenefitsRepaymentRules,
   ...netTaxRules,
 ];

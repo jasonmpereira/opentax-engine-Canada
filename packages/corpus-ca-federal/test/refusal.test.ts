@@ -126,9 +126,11 @@ describe("an employed filer now computes end to end", () => {
 describe("every deliberately unmodelled provision refuses when it applies", () => {
   const CASES: [string, Record<string, unknown>, RegExp][] = [
     [
-      "ca.federal.cpp_self_employment",
-      { ...PENSIONER, selfEmploymentIncome: 30000 },
-      /CPP/i,
+      // Schedule 8 is modelled now; what still refuses is the case where
+      // employment and self-employment CPP would both draw on one ceiling.
+      "ca.federal.cpp_both_employment_and_self_employment",
+      { ...PENSIONER, selfEmploymentIncome: 30000, cppContributionsPaid: 1500 },
+      /shared ceiling|over-state/i,
     ],
     [
       "ca.federal.child_care_expenses",
@@ -136,6 +138,12 @@ describe("every deliberately unmodelled provision refuses when it applies", () =
       /child care/i,
     ],
     ["ca.federal.net_capital_losses", PENSIONER, /capital losses/i],
+    [
+      // The abatement rule exists and refuses for a Quebec resident only.
+      "ca.federal.quebec_abatement",
+      { ...PENSIONER, province: "QC" },
+      /Quebec abatement|line 44000/i,
+    ],
     [
       "ca.federal.donations_annual_limit",
       { ...PENSIONER, charitableDonations: 50000 },
@@ -154,8 +162,9 @@ describe("every deliberately unmodelled provision refuses when it applies", () =
     // The refusals are conditional by design: a filer who claims none of these
     // must still get an answer, or the corpus would be useless.
     for (const target of [
-      "ca.federal.cpp_self_employment",
+      "ca.federal.cpp_both_employment_and_self_employment",
       "ca.federal.child_care_expenses",
+      "ca.federal.quebec_abatement",
     ]) {
       expect((run(PENSIONER, target).value as { cents: bigint }).cents).toBe(0n);
     }
@@ -167,7 +176,6 @@ describe("targets the corpus has never modelled refuse outright", () => {
   // guesses at, the answer is a refusal, not 0.
   const UNMODELLED = [
     "ca.federal.amt",
-    "ca.federal.quebec_abatement",
     "ca.federal.cwb",
     "ca.federal.ccb",
     "ca.federal.gst_credit",

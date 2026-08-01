@@ -272,18 +272,22 @@ describe("gaps that must refuse rather than understate", () => {
     expect(cents(base, "ca.federal.net_tax_completeness")).toBe(0n);
   });
 
-  it("completeness guard refuses on self-employment or Quebec", () => {
-    // net_tax would be UNDERSTATED for these rather than refusing, because the
-    // missing components are additive — this guard is what makes that visible.
-    // OAS is no longer here: s. 180.2 is modelled, so it is IN the total.
-    for (const extra of [
-      { selfEmploymentIncome: 20000 },
-      { province: "QC" },
-    ]) {
-      expect(() =>
-        cents({ ...base, ...extra }, "ca.federal.net_tax_completeness"),
-      ).toThrow(/does not yet model/i);
-    }
+  it("completeness guard is now empty — every additive line-42000 gap closed", () => {
+    // It began with three branches: OAS recovery (now modelled), Schedule 8
+    // CPP (now modelled), and the Quebec abatement — which the FPFAA research
+    // showed is line 44000, applied AFTER net tax, so it never belonged here.
+    // The guard is kept rather than deleted: AMT (s. 127.5) belongs in it the
+    // moment that work starts.
+    expect(cents(base, "ca.federal.net_tax_completeness")).toBe(0n);
+    expect(cents({ ...base, province: "QC" }, "ca.federal.net_tax_completeness")).toBe(0n);
+  });
+
+  it("net tax is CORRECT for a Quebec resident; only the abatement is missing", () => {
+    // ITA s. 120(2) deems the abatement "paid on account of" tax — T1 line
+    // 44000, inside total credits. Line 42000 itself is unaffected.
+    const qc = { ...base, province: "QC" };
+    expect(cents(qc, "ca.federal.net_tax")).toBe(cents(base, "ca.federal.net_tax"));
+    expect(() => cents(qc, "ca.federal.quebec_abatement")).toThrow(/line 44000|not modelled/i);
   });
 });
 
@@ -345,5 +349,48 @@ describe("top-up tax credit (line 34990, new for 2025)", () => {
     // 14.5% into the extra 0.5% that restores a 15% rate.
     expect(831938n).toBe((5737500n * 145n + 500n) / 1000n);
     expect(Math.round((0.5 / 14.5) * 10000) / 100).toBeCloseTo(3.45, 2);
+  });
+});
+
+describe("CPP on self-employment (Schedule 8)", () => {
+  // At or above the YAMPE every figure should hit the maximum CRA prints on
+  // Schedule 8 — five independent checkpoints on one return.
+  const maxed = { ...WHO, employmentIncome: 0, selfEmploymentIncome: 90000 };
+
+  it("hits every printed Schedule 8 maximum at the ceiling", () => {
+    expect(cents(maxed, "ca.federal.cpp_contributory_self_employment_earnings")).toBe(6780000n); // $67,800
+    expect(cents(maxed, "ca.federal.cpp2_self_employment_earnings")).toBe(990000n); // $9,900
+    expect(cents(maxed, "ca.federal.cpp_base_self_employment")).toBe(671220n); // $6,712.20
+    expect(cents(maxed, "ca.federal.cpp_enhanced_self_employment")).toBe(214800n); // 1,356 + 792
+    expect(cents(maxed, "ca.federal.cpp_self_employment_credit_amount")).toBe(335610n); // $3,356.10
+  });
+
+  it("splits base 50/50 and routes all enhanced to the deduction", () => {
+    // deduction = half the base (3,356.10) + all enhanced (2,148.00)
+    expect(cents(maxed, "ca.federal.cpp_self_employment_deduction")).toBe(550410n);
+  });
+
+  it("has no CPP2 band below the YMPE", () => {
+    const below = { ...WHO, employmentIncome: 0, selfEmploymentIncome: 60000 };
+    expect(cents(below, "ca.federal.cpp2_self_employment_earnings")).toBe(0n);
+    // 60,000 - 3,500 = 56,500 contributory; x 9.9% = 5,593.50
+    expect(cents(below, "ca.federal.cpp_base_self_employment")).toBe(559350n);
+    // enhanced is CPP1 only: 56,500 x 2% = 1,130.00
+    expect(cents(below, "ca.federal.cpp_enhanced_self_employment")).toBe(113000n);
+  });
+
+  it("the statutory YAMPE formula reproduces CRA's published figure", () => {
+    // CPP s. 18.1: YAMPE = 1.14 x YMPE, rounded DOWN to the next $100.
+    // 1.14 x 71,300 = 81,282 -> 81,200, which is what Schedule 8 prints.
+    expect(Math.floor((1.14 * 71300) / 100) * 100).toBe(81200);
+  });
+
+  it("refuses when employment and self-employment CPP share one ceiling", () => {
+    const both = { ...WHO, employmentIncome: 0, selfEmploymentIncome: 50000, cppContributionsPaid: 2000 };
+    expect(() => cents(both, "ca.federal.net_tax")).toThrow(/shared ceiling|over-state|Part 5/i);
+  });
+
+  it("a self-employed return now computes net tax", () => {
+    expect(cents(maxed, "ca.federal.net_tax")).toBeGreaterThan(0n);
   });
 });
